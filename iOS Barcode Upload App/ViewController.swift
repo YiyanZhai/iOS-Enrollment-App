@@ -7,20 +7,24 @@
 
 import UIKit
 
-
-
-
-class FirstViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var barcode_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
     
+    @IBOutlet weak var textbox: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.textbox.delegate = self
+        self.navigationController?.navigationBar.isHidden=true
     }
     
     @IBAction func goToNextPage(_ sender: Any) {
+        if let text = self.textbox.text, text.isEmpty {
+            return
+        }
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let nextVC = storyboard.instantiateViewController(withIdentifier: "Second")
         self.navigationController?.pushViewController(nextVC, animated: true)

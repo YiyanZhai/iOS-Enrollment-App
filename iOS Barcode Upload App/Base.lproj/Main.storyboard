@@ -74,6 +74,7 @@
                         <outlet property="barcode_button" destination="5aI-WD-maq" id="ILd-rk-vPb"/>
                         <outlet property="imageView" destination="7mM-MF-FPi" id="4IV-NZ-fUB"/>
                         <outlet property="next_button" destination="Ks6-Ux-ioJ" id="jAO-R3-5x7"/>
+                        <outlet property="textbox" destination="k4V-Zm-D7t" id="dbx-4r-Thh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -105,10 +106,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cTX-dF-xAC">
-                                <rect key="frame" x="237" y="711" width="69" height="35"/>
+                                <rect key="frame" x="70" y="708" width="59" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Finish"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Prev"/>
                                 <connections>
                                     <action selector="goToPrevPage:" destination="Mev-16-2Bi" eventType="touchUpInside" id="fvC-60-yAI"/>
                                 </connections>

@@ -19,4 +19,8 @@ class SecondViewController: UIViewController {
         let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
         self.navigationController?.pushViewController(nextVC, animated: false)
     }
+    
+    @IBAction func goBack(_ sender: Any) {
+        self.navigationController?.popViewController(animated: false)
+    }
 }
