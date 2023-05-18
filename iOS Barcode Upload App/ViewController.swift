@@ -72,12 +72,21 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
             guard let self = self else { return }
             self.imageView.image = image
             self.dismiss(animated: true, completion: nil)
+            
+            let imageSize = getImageSizeString(image) // Get the size string of the image
+            textbox.text = imageSize // Update the text of the text field
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.dismiss(animated: true, completion: nil)
         })
+        
+        func getImageSizeString(_ image: UIImage) -> String {
+            let sizeInBytes = image.pngData()?.count ?? 0
+            let sizeInKB = sizeInBytes / 1024
+            return "\(sizeInKB)"
+        }
 
         useImageAlert.addAction(useAction)
         useImageAlert.addAction(cancelAction)
