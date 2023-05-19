@@ -68,28 +68,17 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
         let useImageAlert = UIAlertController(title: "Confirm Image", message: "Do you want to use this image?", preferredStyle: .alert)
 
-        let useAction = UIAlertAction(title: "Use Image", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.imageView.image = image
-            self.dismiss(animated: true, completion: nil)
-            
-            let imageSize = getImageSizeString(image) // Get the size string of the image
-            textbox.text = imageSize // Update the text of the text field
-        }
-
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
-            self.dismiss(animated: true, completion: nil)
-        })
+        self.imageView.image = image
+        self.dismiss(animated: true, completion: nil)
+        
+        let imageSize = getImageSizeString(image) // Get the size string of the image
+        textbox.text = imageSize // Update the text of the text field
         
         func getImageSizeString(_ image: UIImage) -> String {
             let sizeInBytes = image.pngData()?.count ?? 0
             let sizeInKB = sizeInBytes / 1024
             return "\(sizeInKB)"
         }
-
-        useImageAlert.addAction(useAction)
-        useImageAlert.addAction(cancelAction)
 
         picker.present(useImageAlert, animated: true, completion: nil)
     }

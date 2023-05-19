@@ -8,7 +8,7 @@
 import UIKit
 import PhotosUI
 
-class SecondViewController: UIViewController, PHPickerViewControllerDelegate {
+class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -17,10 +17,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate {
     @IBOutlet weak var imageView3: UIImageView!
     @IBOutlet weak var imageView4: UIImageView!
     
-    @IBOutlet weak var l1: UILabel!
-    @IBOutlet weak var l2: UILabel!
-    @IBOutlet weak var l3: UILabel!
-    @IBOutlet weak var l4: UILabel!
     
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
@@ -30,20 +26,39 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate {
     var selectedImages: [UIImage] = []
     
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = 4 // Set the maximum number of photos to be selected
+        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
+        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePicker.sourceType = .camera
+                self.present(imagePicker, animated: true, completion: nil)
+            } else {
+                let alert = UIAlertController(title: "Error", message: "Camera not available", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
+        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            
+            var configuration = PHPickerConfiguration()
+            configuration.selectionLimit = 4 // Set the maximum number of photos to be selected
 
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        present(picker, animated: true, completion: nil)
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            present(picker, animated: true, completion: nil)
+        }
+        
+        actionSheet.addAction(cameraAction)
+        actionSheet.addAction(libraryAction)
+        
+        present(actionSheet, animated: true, completion: nil)
+        
+        
     }
-    
-    // Function to compare two UIImage objects based on their pixel data
-//    func compareImages(_ image1: UIImage, _ image2: UIImage) -> Bool {
-//        var data1 = image1.pngData()
-//        var data2 = image2.pngData()
-//        return data1 == data2
-//    }
     
     func compareImages(_ image1: UIImage, _ image2: UIImage) -> Bool {
         return image1.pngData()?.count == image2.pngData()?.count
@@ -56,20 +71,9 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate {
                 result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
                     if let image = image as? UIImage {
                         DispatchQueue.main.async {
-                            let isDuplicate = self?.selectedImages.contains { [weak self] existingImage in
-                                guard let strongSelf = self else { return false }
-                                return strongSelf.compareImages(existingImage, image)
-                            }
-                            if let strongSelf = self, let index = strongSelf.selectedImages.firstIndex(where: { strongSelf.compareImages($0, image) }) {
-                                strongSelf.l2.text = "Duplicate at index: \(index)"
-                            } else {
-                                self?.l2.text = "Not a duplicate"
-                            }
-                            if let isDuplicate = isDuplicate, !isDuplicate {
+                            if self?.selectedImages.count ?? 0 < 4 {
                                 self?.selectedImages.append(image)
                                 self?.updateImageViews()
-                                
-                                self?.l1.text=String(self?.selectedImages.count ?? 0)
                             }
                         }
                     }
@@ -101,6 +105,29 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate {
             }
         }
     }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.originalImage] as? UIImage else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        if selectedImages.count < 4 {
+            selectedImages.append(image)
+        }
+
+        let imageViews = [imageView1, imageView2, imageView3, imageView4]
+        for (index, imageView) in imageViews.enumerated() {
+            if index < selectedImages.count {
+                imageView?.image = selectedImages[index]
+            } else {
+                imageView?.image = nil
+            }
+        }
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
     @IBAction func goToNextPage(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)

@@ -21,5 +21,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Need to take barcode and product photos.</string>
 </dict>
 </plist>
