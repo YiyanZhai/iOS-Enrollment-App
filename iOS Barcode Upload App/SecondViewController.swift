@@ -18,6 +18,12 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     @IBOutlet weak var imageView4: UIImageView!
     
     
+    @IBOutlet weak var deleteButton1: UIButton!
+    @IBOutlet weak var deleteButton2: UIButton!
+    @IBOutlet weak var deleteButton3: UIButton!
+    @IBOutlet weak var deleteButton4: UIButton!
+    
+    
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
     
@@ -59,11 +65,39 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         
         
     }
+
     
-    func compareImages(_ image1: UIImage, _ image2: UIImage) -> Bool {
-        return image1.pngData()?.count == image2.pngData()?.count
+    @IBAction func deleteButtonTapped(_ sender: UIButton) {
+        if sender == deleteButton1 && selectedImages.count > 0 {
+            // Delete action for the first image view
+            selectedImages.remove(at: 0)
+            updateImageViews()
+        } else if sender == deleteButton2 && selectedImages.count > 1 {
+            // Delete action for the second image view
+            selectedImages.remove(at: 1)
+            updateImageViews()
+        } else if sender == deleteButton3 && selectedImages.count > 2 {
+            // Delete action for the third image view
+            selectedImages.remove(at: 2)
+            updateImageViews()
+        } else if sender == deleteButton4 && selectedImages.count > 3 {
+            // Delete action for the fourth image view
+            selectedImages.remove(at: 3)
+            updateImageViews()
+        }
     }
     
+    func updateImageViews() {
+        let imageViews = [imageView1, imageView2, imageView3, imageView4]
+        for (index, imageView) in imageViews.enumerated() {
+            if index < selectedImages.count {
+                imageView?.image = selectedImages[index]
+            } else {
+                imageView?.image = nil
+            }
+        }
+    }
+
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
         for result in results {
@@ -78,30 +112,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
                         }
                     }
                 }
-            }
-        }
-
-//        for result in results {
-//            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-//                result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
-//                    if let image = image as? UIImage {
-//                        DispatchQueue.main.async {
-//                            self?.selectedImages.append(image)
-//                            self?.updateImageViews()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-    }
-    
-    func updateImageViews() {
-        let imageViews = [imageView1, imageView2, imageView3, imageView4]
-        for (index, imageView) in imageViews.enumerated() {
-            if index < selectedImages.count {
-                imageView?.image = selectedImages[index]
-            } else {
-                imageView?.image = nil
             }
         }
     }

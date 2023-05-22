@@ -6,21 +6,22 @@
 //
 
 import UIKit
+import AVFoundation
 
-class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate {
+class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate, AVCaptureMetadataOutputObjectsDelegate {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var barcode_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
-    
     @IBOutlet weak var textbox: UITextField!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.textbox.delegate = self
         self.navigationController?.navigationBar.isHidden=true
     }
-    
+
     @IBAction func goToNextPage(_ sender: Any) {
         if let text = self.textbox.text, text.isEmpty {
             return
@@ -66,21 +67,48 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
             return
         }
 
-        let useImageAlert = UIAlertController(title: "Confirm Image", message: "Do you want to use this image?", preferredStyle: .alert)
-
         self.imageView.image = image
         self.dismiss(animated: true, completion: nil)
         
-        let imageSize = getImageSizeString(image) // Get the size string of the image
-        textbox.text = imageSize // Update the text of the text field
-        
-        func getImageSizeString(_ image: UIImage) -> String {
-            let sizeInBytes = image.pngData()?.count ?? 0
-            let sizeInKB = sizeInBytes / 1024
-            return "\(sizeInKB)"
+        if let barcodeValue = decodeBarcode(from: image) {
+            showBarcodeAlert(barcodeValue)  // Barcode decoded successfully
+            textbox.text = barcodeValue
+        } else {
+            showBarcodeAlert("Unable to decode barcode from the image")
         }
-
-        picker.present(useImageAlert, animated: true, completion: nil)
+        
+//        let imageSize = getImageSizeString(image) // Get the size string of the image
+//        textbox.text = imageSize // Update the text of the text field
+//
+//        func getImageSizeString(_ image: UIImage) -> String {
+//            let sizeInBytes = image.pngData()?.count ?? 0
+//            let sizeInKB = sizeInBytes / 1024
+//            return "\(sizeInKB)"
+//        }
+    }
+    
+    func decodeBarcode(from image: UIImage) -> String? {
+        guard let ciImage = CIImage(image: image) else {
+            return nil
+        }
+        
+        let options: [String: Any] = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+        let detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: options)
+        
+        let features = detector?.features(in: ciImage)
+        guard let qrCodeFeature = features?.first as? CIQRCodeFeature else {
+            return nil
+        }
+        
+        let barcodeValue = qrCodeFeature.messageString
+        return barcodeValue
+    }
+    
+    func showBarcodeAlert(_ barcodeValue: String) {
+        let alert = UIAlertController(title: "Barcode", message: barcodeValue, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
     }
 
 }
