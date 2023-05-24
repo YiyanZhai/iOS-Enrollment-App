@@ -10,6 +10,10 @@ import PhotosUI
 
 class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     
+    // from FirstViewController
+    var barcodeValue: String = ""
+    var barcodeImage: UIImage?
+    
     @IBOutlet weak var imageView1: UIImageView!
     @IBOutlet weak var imageView2: UIImageView!
     @IBOutlet weak var imageView3: UIImageView!
@@ -18,24 +22,16 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set up the image views with dotted borders
-        addDottedBorder(to: imageView1)
-        addDottedBorder(to: imageView2)
-        addDottedBorder(to: imageView3)
-        addDottedBorder(to: imageView4)
-    }
-
-    func addDottedBorder(to imageView: UIImageView) {
-        let borderLayer = CAShapeLayer()
-        borderLayer.strokeColor = UIColor.black.cgColor
-        borderLayer.lineWidth = 1.0
-        borderLayer.lineDashPattern = [4, 4]
-        borderLayer.fillColor = nil
-        borderLayer.frame = imageView.bounds
-        borderLayer.path = UIBezierPath(rect: imageView.bounds).cgPath
-        borderLayer.cornerRadius = imageView.layer.cornerRadius
+        // Hide the delete buttons initially
+        deleteButton1.isHidden = true
+        deleteButton2.isHidden = true
+        deleteButton3.isHidden = true
+        deleteButton4.isHidden = true
         
-        imageView.layer.addSublayer(borderLayer)
+        imageView1.layer.cornerRadius = 4.0
+        imageView2.layer.cornerRadius = 4.0
+        imageView3.layer.cornerRadius = 4.0
+        imageView4.layer.cornerRadius = 4.0
     }
     
     @IBOutlet weak var deleteButton1: UIButton!
@@ -43,6 +39,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     @IBOutlet weak var deleteButton3: UIButton!
     @IBOutlet weak var deleteButton4: UIButton!
     
+    @IBOutlet weak var server_button: UIButton!
     
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
@@ -111,14 +108,19 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     
     func updateImageViews() {
         let imageViews = [imageView1, imageView2, imageView3, imageView4]
+        let deleteButtons = [deleteButton1, deleteButton2, deleteButton3, deleteButton4]
+
         for (index, imageView) in imageViews.enumerated() {
             if index < selectedImages.count {
                 imageView?.image = selectedImages[index]
+                deleteButtons[index]?.isHidden = false
             } else {
                 imageView?.image = nil
+                deleteButtons[index]?.isHidden = true
             }
         }
     }
+
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
@@ -170,17 +172,100 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     @IBAction func goBack(_ sender: Any) {
         self.navigationController?.popViewController(animated: false)
     }
+    
+    
+    func getAppUserCredentials() -> String {
+        // Retrieve the user credentials
+        return UserDefaults.standard.string(forKey: "username") ?? ""
+    }
+    
+    func uploadData(_ sender: Any) {
+        // Convert the images to data
+        guard let barcodeImageData = barcodeImage?.jpegData(compressionQuality: 0.8)?.base64EncodedString() else {
+            displayWarning("Failed to convert barcode image to data")
+            return
+        }
+        
+        if selectedImages.count == 0 {
+            displayWarning("Please upload product photos.")
+            return
+        }
+        
+        var productImageDatas: [String] = []
+        for image in selectedImages {
+            guard let imageData = image.jpegData(compressionQuality: 0.8)?.base64EncodedString() else {
+                displayWarning("Failed to convert product image to data")
+                return
+            }
+            productImageDatas.append(imageData)
+        }
+        print(barcodeImageData.count)
+        print(productImageDatas.count)
+        // Create the request body
+        let credentials = getAppUserCredentials()
+        let requestBody: [String: Any] = [
+            "user_info": credentials,
+            "barcode_image": barcodeImageData,
+            "processed_barcode": barcodeValue,
+            "product_images": productImageDatas
+        ]
+        
+        // Convert the request body to JSON data
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+            displayWarning("Failed to convert request body to JSON data")
+            return
+        }
+        
+        // Configure the request
+        guard let url = URL(string: "<server_url>/enroll_barcode_productimages") else {
+            displayWarning("Invalid server URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = jsonData
+        
+        // Create a URLSession task for the request
+        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
+            if let error = error {
+                self?.displayWarning("Failed to upload to the server: \(error.localizedDescription)")
+            } else {
+                // Check the server response and handle accordingly
+                if let data = data,
+                   let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let success = responseJSON["success"] as? Bool,
+                   let message = responseJSON["message"] as? String {
+                    if success {
+                        self?.displaySuccess(message)
+                    } else {
+                        self?.displayWarning("Failed to upload to the server: \(message)")
+                    }
+                } else {
+                    self?.displayWarning("Failed to parse server response")
+                }
+            }
+        }
+        
+        // Start the URLSession task
+        task.resume()
+    }
+    
+    func displayWarning(_ message: String) {
+        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
+    func displaySuccess(_ message: String) {
+        let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    @IBAction func uploadToServer(_ sender: Any) {
+        uploadData(sender)
+    }
+
 }
 
-
-//                            if let strongSelf = self {
-//                                if strongSelf.selectedImages.count < 4 {
-//                                    let isDuplicate = self?.selectedImages.contains { [weak self] existingImage in
-//                                        return self?.compareImages(existingImage, image) ?? false
-//                                    }
-//                                    if let isDuplicate = isDuplicate, !isDuplicate {
-//                                        self?.selectedImages.append(image)
-//                                        self?.updateImageViews()
-//                                    }
-//                                }
-//                            }

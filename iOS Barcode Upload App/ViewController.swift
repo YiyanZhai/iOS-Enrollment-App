@@ -16,6 +16,8 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBOutlet weak var next_button: UIButton!
     @IBOutlet weak var textbox: UITextField!
     
+    var isBarcodeUploaded: Bool = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,19 +28,7 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
         
-        // Create a border layer with dashed line style
-        let borderLayer = CAShapeLayer()
-        borderLayer.strokeColor = UIColor.black.cgColor
-        borderLayer.lineWidth = 1.0
-        borderLayer.lineDashPattern = [4, 4] // Adjust the values to control the dash length and gap
-        borderLayer.fillColor = nil
-        borderLayer.frame = imageView.bounds
-        borderLayer.path = UIBezierPath(rect: imageView.bounds).cgPath
-        borderLayer.cornerRadius = imageView.layer.cornerRadius // Set corner radius if needed
-
-        // Add the border layer to the image view's layer
-        imageView.layer.addSublayer(borderLayer)
-
+        imageView.layer.cornerRadius = 6.0
     }
 
     // Handle the return key press to dismiss the keyboard
@@ -51,15 +41,24 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
     }
-
+    
 
     @IBAction func goToNextPage(_ sender: Any) {
-        if let text = self.textbox.text, text.isEmpty {
+        // Ensure the necessary data is available
+        guard let barcodeValue = self.textbox.text, !barcodeValue.isEmpty,
+              let barcodeImage = self.imageView.image else {
+            // Display an error or prompt the user to complete the necessary fields
             return
         }
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let nextVC = storyboard.instantiateViewController(withIdentifier: "Second")
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        if let nextVC = storyboard.instantiateViewController(withIdentifier: "Second") as? SecondViewController {
+            // Pass the data to the second view controller
+            nextVC.barcodeValue = barcodeValue
+            nextVC.barcodeImage = barcodeImage
+            
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
     
     @IBAction func uploadButtonTapped(_ sender: UIButton) {
@@ -92,6 +91,11 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if !isBarcodeUploaded {
+            return false
+        }
+        
         guard let currentText = textField.text else {
             return true
         }
@@ -112,6 +116,7 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
         self.imageView.image = image
         self.dismiss(animated: true, completion: nil)
+        self.isBarcodeUploaded = true // Set isBarcodeUploaded to true when the image is uploaded
         
         if let barcodeValue = decodeBarcode(from: image) {
             if let number = Int(barcodeValue) {
