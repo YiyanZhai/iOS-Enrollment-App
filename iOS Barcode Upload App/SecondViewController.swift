@@ -9,14 +9,34 @@ import UIKit
 import PhotosUI
 
 class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
+    
     @IBOutlet weak var imageView1: UIImageView!
     @IBOutlet weak var imageView2: UIImageView!
     @IBOutlet weak var imageView3: UIImageView!
     @IBOutlet weak var imageView4: UIImageView!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Set up the image views with dotted borders
+        addDottedBorder(to: imageView1)
+        addDottedBorder(to: imageView2)
+        addDottedBorder(to: imageView3)
+        addDottedBorder(to: imageView4)
+    }
+
+    func addDottedBorder(to imageView: UIImageView) {
+        let borderLayer = CAShapeLayer()
+        borderLayer.strokeColor = UIColor.black.cgColor
+        borderLayer.lineWidth = 1.0
+        borderLayer.lineDashPattern = [4, 4]
+        borderLayer.fillColor = nil
+        borderLayer.frame = imageView.bounds
+        borderLayer.path = UIBezierPath(rect: imageView.bounds).cgPath
+        borderLayer.cornerRadius = imageView.layer.cornerRadius
+        
+        imageView.layer.addSublayer(borderLayer)
+    }
     
     @IBOutlet weak var deleteButton1: UIButton!
     @IBOutlet weak var deleteButton2: UIButton!
@@ -46,6 +66,8 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
                 self.present(alert, animated: true, completion: nil)
             }
         }
+        
+        
         
         let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
             guard let self = self else { return }
