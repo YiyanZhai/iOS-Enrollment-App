@@ -11,13 +11,32 @@ import Vision
 
 class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate, AVCaptureMetadataOutputObjectsDelegate {
     
+    var userEmail: String = ""
+    var userPassword: String = ""
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let defaults = UserDefaults.standard
+        print(defaults.bool(forKey: "isLoggedIn"))
+        if defaults.bool(forKey: "isLoggedIn") == false {
+            self.performSegue(withIdentifier: "goLogIn", sender: self)
+        }
+        
+    }
+    
+    @IBAction func logOutTapped(_ sender: Any) {
+        let defaults = UserDefaults.standard
+        defaults.set(false, forKey: "isLoggedIn")
+        self.performSegue(withIdentifier: "goLogIn", sender: self)
+    }
+    
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var barcode_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
     @IBOutlet weak var textbox: UITextField!
     
-    var isBarcodeUploaded: Bool = false
+    @IBOutlet weak var logOut: UIButton!
     
+    var isBarcodeUploaded: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +49,17 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         
         imageView.layer.cornerRadius = 6.0
     }
+
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "goLogIn" {
+//            // Handle preparation for the login segue, if needed
+//            // For example, you can pass data to the destination view controller
+//            if let destinationVC = segue.destination as? logInViewController {
+//                destinationVC.username = "john_doe"
+//            }
+//        }
+//    }
+    
 
     // Handle the return key press to dismiss the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -62,6 +92,9 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     @IBAction func uploadButtonTapped(_ sender: UIButton) {
+        let defaults = UserDefaults.standard
+        userEmail = defaults.string(forKey: "Username") ?? "default value"
+        print("Received data from modal: \(userEmail)")
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)

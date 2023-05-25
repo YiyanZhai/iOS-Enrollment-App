@@ -16,6 +16,8 @@
 		A9CF00AB2A0E793400856F43 /* iOS_Barcode_Upload_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CF00AA2A0E793400856F43 /* iOS_Barcode_Upload_AppTests.swift */; };
 		A9CF00B52A0E793400856F43 /* iOS_Barcode_Upload_AppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CF00B42A0E793400856F43 /* iOS_Barcode_Upload_AppUITests.swift */; };
 		A9CF00B72A0E793400856F43 /* iOS_Barcode_Upload_AppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CF00B62A0E793400856F43 /* iOS_Barcode_Upload_AppUITestsLaunchTests.swift */; };
+		A9D2D6B82A1EECAC00BEF8D5 /* registerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D2D6B72A1EECAC00BEF8D5 /* registerViewController.swift */; };
+		A9D2D6BA2A1F225E00BEF8D5 /* logInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D2D6B92A1F225E00BEF8D5 /* logInViewController.swift */; };
 		A9E1D60F2A11E39A0044FF22 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E1D60E2A11E39A0044FF22 /* SecondViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +52,8 @@
 		A9CF00B02A0E793400856F43 /* iOS Barcode Upload AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Barcode Upload AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9CF00B42A0E793400856F43 /* iOS_Barcode_Upload_AppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Barcode_Upload_AppUITests.swift; sourceTree = "<group>"; };
 		A9CF00B62A0E793400856F43 /* iOS_Barcode_Upload_AppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Barcode_Upload_AppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		A9D2D6B72A1EECAC00BEF8D5 /* registerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerViewController.swift; sourceTree = "<group>"; };
+		A9D2D6B92A1F225E00BEF8D5 /* logInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInViewController.swift; sourceTree = "<group>"; };
 		A9E1D60E2A11E39A0044FF22 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -104,6 +108,8 @@
 				A9CF00932A0E793000856F43 /* AppDelegate.swift */,
 				A9CF00952A0E793000856F43 /* SceneDelegate.swift */,
 				A9CF00972A0E793000856F43 /* ViewController.swift */,
+				A9D2D6B72A1EECAC00BEF8D5 /* registerViewController.swift */,
+				A9D2D6B92A1F225E00BEF8D5 /* logInViewController.swift */,
 				A9E1D60E2A11E39A0044FF22 /* SecondViewController.swift */,
 				A9CF00992A0E793000856F43 /* Main.storyboard */,
 				A9CF009C2A0E793300856F43 /* Assets.xcassets */,
@@ -264,6 +270,8 @@
 				A9E1D60F2A11E39A0044FF22 /* SecondViewController.swift in Sources */,
 				A9CF00982A0E793000856F43 /* ViewController.swift in Sources */,
 				A9CF00942A0E793000856F43 /* AppDelegate.swift in Sources */,
+				A9D2D6B82A1EECAC00BEF8D5 /* registerViewController.swift in Sources */,
+				A9D2D6BA2A1F225E00BEF8D5 /* logInViewController.swift in Sources */,
 				A9CF00962A0E793000856F43 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
