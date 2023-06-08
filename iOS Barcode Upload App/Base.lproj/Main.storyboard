@@ -516,6 +516,7 @@
                     <nil name="viewControllers"/>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="uIy-GJ-8Mm"/>
+                        <segue destination="FT2-zi-WE4" kind="modal" identifier="goLogin" id="380-mt-gHi"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uvg-o7-2qD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -523,6 +524,9 @@
             <point key="canvasLocation" x="1527" y="-660"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="380-mt-gHi"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="trash.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="systemGray4Color">

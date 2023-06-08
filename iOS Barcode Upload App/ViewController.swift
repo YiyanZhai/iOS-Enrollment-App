@@ -6,10 +6,9 @@
 //
 
 import UIKit
-import AVFoundation
 import Vision
 
-class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate, AVCaptureMetadataOutputObjectsDelegate {
+class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate {
     
     var userEmail: String = ""
     var userPassword: String = ""
@@ -24,7 +23,10 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     @IBAction func logOutTapped(_ sender: Any) {
+        NotificationCenter.default.post(name: Notification.Name("LogoutNotification"), object: nil)
+    
         let defaults = UserDefaults.standard
+        defaults.set("", forKey: "refresh")
         defaults.set(false, forKey: "isLoggedIn")
         self.performSegue(withIdentifier: "goLogIn", sender: self)
     }
@@ -49,17 +51,6 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         
         imageView.layer.cornerRadius = 6.0
     }
-
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "goLogIn" {
-//            // Handle preparation for the login segue, if needed
-//            // For example, you can pass data to the destination view controller
-//            if let destinationVC = segue.destination as? logInViewController {
-//                destinationVC.username = "john_doe"
-//            }
-//        }
-//    }
-    
 
     // Handle the return key press to dismiss the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -92,9 +83,8 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     @IBAction func uploadButtonTapped(_ sender: UIButton) {
-        let defaults = UserDefaults.standard
-        userEmail = defaults.string(forKey: "Username") ?? "default value"
-        print("Received data from modal: \(userEmail)")
+        let defaults = UserDefaults.standard, token = defaults.string(forKey: "refresh") ?? "default value"
+        print("Received data from modal: \(token)")
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
