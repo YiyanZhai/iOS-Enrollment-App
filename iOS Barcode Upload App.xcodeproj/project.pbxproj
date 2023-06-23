@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		715E395AD7DEB19786A6358A /* libPods-iOS Barcode Upload App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF0BD04912809A90176AEC98 /* libPods-iOS Barcode Upload App.a */; };
+		A9B915C02A3909AD008EF8AF /* Bridging-Header.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B915BF2A3909AD008EF8AF /* Bridging-Header.m */; };
+		A9C8BE592A442D87005B172F /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8BE582A442D87005B172F /* TestViewController.swift */; };
 		A9CF00942A0E793000856F43 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CF00932A0E793000856F43 /* AppDelegate.swift */; };
 		A9CF00962A0E793000856F43 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CF00952A0E793000856F43 /* SceneDelegate.swift */; };
 		A9CF00982A0E793000856F43 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CF00972A0E793000856F43 /* ViewController.swift */; };
@@ -39,6 +42,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A6613B94A65C133E2BC654A /* Pods-iOS Barcode Upload App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Barcode Upload App.debug.xcconfig"; path = "Target Support Files/Pods-iOS Barcode Upload App/Pods-iOS Barcode Upload App.debug.xcconfig"; sourceTree = "<group>"; };
+		5F1FEC1BB901F26671044E92 /* Pods-iOS Barcode Upload App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Barcode Upload App.release.xcconfig"; path = "Target Support Files/Pods-iOS Barcode Upload App/Pods-iOS Barcode Upload App.release.xcconfig"; sourceTree = "<group>"; };
+		A9B915BE2A3909AC008EF8AF /* iOS Barcode Upload App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Barcode Upload App-Bridging-Header.h"; sourceTree = "<group>"; };
+		A9B915BF2A3909AD008EF8AF /* Bridging-Header.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Bridging-Header.m"; sourceTree = "<group>"; };
+		A9C8BE582A442D87005B172F /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		A9CF00902A0E793000856F43 /* iOS Barcode Upload App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Barcode Upload App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9CF00932A0E793000856F43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9CF00952A0E793000856F43 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -55,6 +63,7 @@
 		A9D2D6B72A1EECAC00BEF8D5 /* registerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerViewController.swift; sourceTree = "<group>"; };
 		A9D2D6B92A1F225E00BEF8D5 /* logInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInViewController.swift; sourceTree = "<group>"; };
 		A9E1D60E2A11E39A0044FF22 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		BF0BD04912809A90176AEC98 /* libPods-iOS Barcode Upload App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Barcode Upload App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				715E395AD7DEB19786A6358A /* libPods-iOS Barcode Upload App.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +92,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7A6C74F03F0F37E3BC707449 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF0BD04912809A90176AEC98 /* libPods-iOS Barcode Upload App.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		875B177146465FB9C71524E6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5A6613B94A65C133E2BC654A /* Pods-iOS Barcode Upload App.debug.xcconfig */,
+				5F1FEC1BB901F26671044E92 /* Pods-iOS Barcode Upload App.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		A9CF00872A0E793000856F43 = {
 			isa = PBXGroup;
 			children = (
@@ -89,6 +116,8 @@
 				A9CF00A92A0E793400856F43 /* iOS Barcode Upload AppTests */,
 				A9CF00B32A0E793400856F43 /* iOS Barcode Upload AppUITests */,
 				A9CF00912A0E793000856F43 /* Products */,
+				875B177146465FB9C71524E6 /* Pods */,
+				7A6C74F03F0F37E3BC707449 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -107,14 +136,17 @@
 			children = (
 				A9CF00932A0E793000856F43 /* AppDelegate.swift */,
 				A9CF00952A0E793000856F43 /* SceneDelegate.swift */,
+				A9B915BF2A3909AD008EF8AF /* Bridging-Header.m */,
 				A9CF00972A0E793000856F43 /* ViewController.swift */,
 				A9D2D6B72A1EECAC00BEF8D5 /* registerViewController.swift */,
 				A9D2D6B92A1F225E00BEF8D5 /* logInViewController.swift */,
 				A9E1D60E2A11E39A0044FF22 /* SecondViewController.swift */,
+				A9C8BE582A442D87005B172F /* TestViewController.swift */,
 				A9CF00992A0E793000856F43 /* Main.storyboard */,
 				A9CF009C2A0E793300856F43 /* Assets.xcassets */,
 				A9CF009E2A0E793300856F43 /* LaunchScreen.storyboard */,
 				A9CF00A12A0E793300856F43 /* Info.plist */,
+				A9B915BE2A3909AC008EF8AF /* iOS Barcode Upload App-Bridging-Header.h */,
 			);
 			path = "iOS Barcode Upload App";
 			sourceTree = "<group>";
@@ -143,6 +175,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A9CF00BA2A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload App" */;
 			buildPhases = (
+				5FF4D30F0546DE92805AF0D6 /* [CP] Check Pods Manifest.lock */,
 				A9CF008C2A0E793000856F43 /* Sources */,
 				A9CF008D2A0E793000856F43 /* Frameworks */,
 				A9CF008E2A0E793000856F43 /* Resources */,
@@ -204,6 +237,7 @@
 				TargetAttributes = {
 					A9CF008F2A0E793000856F43 = {
 						CreatedOnToolsVersion = 14.3;
+						LastSwiftMigration = 1430;
 					};
 					A9CF00A52A0E793400856F43 = {
 						CreatedOnToolsVersion = 14.3;
@@ -262,6 +296,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5FF4D30F0546DE92805AF0D6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iOS Barcode Upload App-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A9CF008C2A0E793000856F43 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -269,7 +328,9 @@
 			files = (
 				A9E1D60F2A11E39A0044FF22 /* SecondViewController.swift in Sources */,
 				A9CF00982A0E793000856F43 /* ViewController.swift in Sources */,
+				A9C8BE592A442D87005B172F /* TestViewController.swift in Sources */,
 				A9CF00942A0E793000856F43 /* AppDelegate.swift in Sources */,
+				A9B915C02A3909AD008EF8AF /* Bridging-Header.m in Sources */,
 				A9D2D6B82A1EECAC00BEF8D5 /* registerViewController.swift in Sources */,
 				A9D2D6BA2A1F225E00BEF8D5 /* logInViewController.swift in Sources */,
 				A9CF00962A0E793000856F43 /* SceneDelegate.swift in Sources */,
@@ -444,9 +505,11 @@
 		};
 		A9CF00BB2A0E793400856F43 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A6613B94A65C133E2BC654A /* Pods-iOS Barcode Upload App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J9X3LA3V65;
@@ -457,7 +520,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -466,6 +529,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "cmu.iOS-Barcode-Uploading";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "iOS Barcode Upload App/iOS Barcode Upload App-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -473,9 +538,11 @@
 		};
 		A9CF00BC2A0E793400856F43 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5F1FEC1BB901F26671044E92 /* Pods-iOS Barcode Upload App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J9X3LA3V65;
@@ -486,7 +553,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -495,6 +562,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "cmu.iOS-Barcode-Uploading";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "iOS Barcode Upload App/iOS Barcode Upload App-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

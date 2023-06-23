@@ -35,7 +35,7 @@ class registerViewController: UIViewController {
         }
         
         // store data to server
-//        signUp(username: username, password: usrpassword)
+        signUp(username: username, password: usrpassword)
         let successAlert = UIAlertController(title: "Registration Succeed", message: "Registration is completed, thank you!", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
             self.dismiss(animated: true, completion: nil)
@@ -67,7 +67,7 @@ class registerViewController: UIViewController {
         // Configure the request
         // ***********
         guard let url = URL(string: "<server_url>/sign_up") else {
-            displayWarning("Error", "Invalid server URL")
+            displayWarning("Error", "Sign Up not supported. Please sign in.")
             return
         }
         var request = URLRequest(url: url)

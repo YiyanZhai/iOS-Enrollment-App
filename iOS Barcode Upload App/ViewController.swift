@@ -8,25 +8,44 @@
 import UIKit
 import Vision
 
+
 class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate {
-    
+
     var userEmail: String = ""
     var userPassword: String = ""
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goLogIn" {
+            if let presentedVC = segue.destination as? logInViewController {
+                presentedVC.isModalInPresentation = true
+                presentedVC.delegate = self
+            }
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         let defaults = UserDefaults.standard
-        print(defaults.bool(forKey: "isLoggedIn"))
+        print("viewDidAppear: isLoggedIn? ",defaults.bool(forKey: "isLoggedIn"))
         if defaults.bool(forKey: "isLoggedIn") == false {
             self.performSegue(withIdentifier: "goLogIn", sender: self)
         }
         
+        print(defaults.string(forKey: "username")!)
+        if defaults.string(forKey: "username") != Optional("none") {
+            usernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
+        }
+        
+        // Add a tap gesture recognizer to the usernameTextBox
+        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
+        usernameTextBox.addGestureRecognizer(tapGesture1)
+        usernameTextBox.isUserInteractionEnabled = true
     }
     
-    @IBAction func logOutTapped(_ sender: Any) {
+    func logOutTapped() {
         NotificationCenter.default.post(name: Notification.Name("LogoutNotification"), object: nil)
-    
+
         let defaults = UserDefaults.standard
-        defaults.set("", forKey: "refresh")
+        defaults.set("", forKey: "access")
         defaults.set(false, forKey: "isLoggedIn")
         self.performSegue(withIdentifier: "goLogIn", sender: self)
     }
@@ -36,11 +55,11 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBOutlet weak var next_button: UIButton!
     @IBOutlet weak var textbox: UITextField!
     
-    @IBOutlet weak var logOut: UIButton!
-    
     var isBarcodeUploaded: Bool = false
+    @IBOutlet weak var usernameTextBox: UITextField!
     
     override func viewDidLoad() {
+        print("viewDidLoad")
         super.viewDidLoad()
         self.textbox.delegate = self
         self.navigationController?.navigationBar.isHidden=true
@@ -49,8 +68,30 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
         
-        imageView.layer.cornerRadius = 6.0
+        self.imageView.layer.cornerRadius = 7.0
+        
+        let defaults = UserDefaults.standard
+//        print(defaults.string(forKey: "username")!)
+        if defaults.string(forKey: "username") != Optional("none") {
+            usernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
+        }
     }
+    
+    @objc func showLogoutOption() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let logoutAction = UIAlertAction(title: "Log Out", style: .destructive) { _ in
+            self.logOutTapped()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(logoutAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+
 
     // Handle the return key press to dismiss the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -69,6 +110,7 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         guard let barcodeValue = self.textbox.text, !barcodeValue.isEmpty,
               let barcodeImage = self.imageView.image else {
             // Display an error or prompt the user to complete the necessary fields
+            self.showWarningAlert("Error", message: "Barcode image and value needed.")
             return
         }
         
@@ -186,4 +228,12 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         present(alert, animated: true, completion: nil)
     }
 
+}
+
+
+extension FirstViewController: LogInViewControllerDelegate {
+    func setUsernameText(_ username: String) {
+        print("LogInViewControllerDelegate setting")
+        self.usernameTextBox.text = username
+    }
 }

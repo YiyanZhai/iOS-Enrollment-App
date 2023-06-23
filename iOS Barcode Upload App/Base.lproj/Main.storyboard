@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eR8-NW-qhN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -18,40 +18,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7mM-MF-FPi">
-                                <rect key="frame" x="60" y="168" width="280" height="220"/>
+                                <rect key="frame" x="60" y="214" width="280" height="220"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.48648682696766016" green="0.48566623091346289" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Barcode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cAg-XK-icR">
-                                <rect key="frame" x="157.55576208178195" y="485.99999999970066" width="76.999999999984084" height="23.999999999990109"/>
+                                <rect key="frame" x="157.55576208178195" y="531.99999999970066" width="76.999999999984084" height="23.999999999990109"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Barcode Image" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bil-rf-Ofb">
-                                <rect key="frame" x="126.65241635687539" y="133.99999999997226" width="138" height="24"/>
+                                <rect key="frame" x="126.65241635687539" y="179.99999999997226" width="138" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Change the returned barcode if it is incorrect." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gla-Jf-ixC">
-                                <rect key="frame" x="66.663568773247107" y="559.99999999988256" width="259.00000000005366" height="15"/>
+                                <rect key="frame" x="66.663568773247107" y="605.99999999988256" width="259.00000000005366" height="15"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" systemColor="systemGray4Color"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Only numbers are allowed. Barcode Image is needed." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kyC-qf-y0Y">
-                                <rect key="frame" x="44.849442379190805" y="580.99999999976262" width="300" height="15"/>
+                                <rect key="frame" x="44.849442379190805" y="626.99999999976262" width="300" height="15"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" systemColor="systemGray4Color"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="k4V-Zm-D7t">
-                                <rect key="frame" x="60" y="518" width="272" height="34"/>
+                                <rect key="frame" x="60" y="564" width="272" height="34"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -77,15 +77,15 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5aI-WD-maq">
-                                <rect key="frame" x="145.73977695170106" y="401.99999999991735" width="98.000000000020236" height="39.999999999991701"/>
+                                <rect key="frame" x="145.73977695170106" y="447.99999999991735" width="98.000000000020236" height="39.999999999991701"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" titleAlignment="center">
                                     <attributedString key="attributedTitle">
-                                        <fragment content="Upload">
+                                        <fragment content="Select">
                                             <attributes>
                                                 <font key="NSFont" size="18" name="Helvetica-Bold"/>
-                                                <font key="NSOriginalFont" size="12" name="Helvetica"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                             </attributes>
                                         </fragment>
                                     </attributedString>
@@ -95,16 +95,14 @@
                                     <action selector="uploadButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1J7-Y1-Nde"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zgG-cg-Sq0">
-                                <rect key="frame" x="292" y="62" width="85" height="35"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tVi-qv-d39">
+                                <rect key="frame" x="256" y="103" width="121" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="tintColor" systemColor="systemTealColor"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Log Out"/>
-                                <connections>
-                                    <action selector="logOutTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kOV-WE-bGO"/>
-                                </connections>
-                            </button>
+                                <color key="backgroundColor" red="0.32645974016447976" green="0.31136913333707356" blue="0.3255316508611274" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.098039127889999994" green="0.094047375020000004" blue="0.098039679229999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -113,9 +111,9 @@
                     <connections>
                         <outlet property="barcode_button" destination="5aI-WD-maq" id="ILd-rk-vPb"/>
                         <outlet property="imageView" destination="7mM-MF-FPi" id="4IV-NZ-fUB"/>
-                        <outlet property="logOut" destination="zgG-cg-Sq0" id="Guc-dP-8Ql"/>
                         <outlet property="next_button" destination="Ks6-Ux-ioJ" id="jAO-R3-5x7"/>
                         <outlet property="textbox" destination="k4V-Zm-D7t" id="dbx-4r-Thh"/>
+                        <outlet property="usernameTextBox" destination="tVi-qv-d39" id="aEj-U7-5gS"/>
                         <segue destination="FT2-zi-WE4" kind="presentation" identifier="goLogIn" id="Ij3-c0-Dgw"/>
                     </connections>
                 </viewController>
@@ -137,10 +135,10 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled">
                                     <attributedString key="attributedTitle">
-                                        <fragment content="Finish">
+                                        <fragment content="Next">
                                             <attributes>
                                                 <font key="NSFont" size="18" name="Helvetica-Bold"/>
-                                                <font key="NSOriginalFont" size="12" name="Helvetica"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                             </attributes>
                                         </fragment>
                                     </attributedString>
@@ -171,19 +169,19 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kop-9P-Ejh">
-                                <rect key="frame" x="30" y="196" width="160" height="160"/>
+                                <rect key="frame" x="30" y="196" width="160" height="116"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K3i-Yl-jdv">
-                                <rect key="frame" x="203" y="196" width="160" height="160"/>
+                                <rect key="frame" x="203" y="196" width="160" height="116"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6y3-U3-JwD">
-                                <rect key="frame" x="30" y="367" width="160" height="160"/>
+                                <rect key="frame" x="30" y="325" width="160" height="116"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="etB-4i-2lP">
-                                <rect key="frame" x="203" y="367" width="160" height="160"/>
+                                <rect key="frame" x="203" y="325" width="160" height="116"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KDF-eJ-OJ8">
@@ -205,7 +203,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ofZ-EX-Dtx">
-                                <rect key="frame" x="151" y="364" width="50" height="35"/>
+                                <rect key="frame" x="151" y="322" width="50" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
@@ -214,7 +212,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5c3-Hw-mQI">
-                                <rect key="frame" x="324" y="364" width="50" height="35"/>
+                                <rect key="frame" x="324" y="322" width="50" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
@@ -223,31 +221,45 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FI8-GC-H5k">
-                                <rect key="frame" x="113" y="454" width="0.0" height="0.0"/>
+                                <rect key="frame" x="113" y="412" width="0.0" height="0.0"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KyR-Xt-QVh">
-                                <rect key="frame" x="143" y="562" width="105" height="40"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="URM-En-lyd">
+                                <rect key="frame" x="30" y="452" width="160" height="116"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PSO-LZ-2QM">
+                                <rect key="frame" x="203" y="452" width="160" height="116"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bTg-tb-SZb">
+                                <rect key="frame" x="151" y="449" width="50" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled">
-                                    <attributedString key="attributedTitle">
-                                        <fragment content="Confirm">
-                                            <attributes>
-                                                <font key="NSFont" size="18" name="Helvetica-Bold"/>
-                                                <font key="NSOriginalFont" size="12" name="Helvetica"/>
-                                            </attributes>
-                                        </fragment>
-                                    </attributedString>
-                                    <color key="baseBackgroundColor" systemColor="systemMintColor"/>
-                                </buttonConfiguration>
+                                <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
                                 <connections>
-                                    <action selector="uploadToServer:" destination="Mev-16-2Bi" eventType="touchUpInside" id="893-tR-RSm"/>
+                                    <action selector="deleteButtonTapped:" destination="Mev-16-2Bi" eventType="touchUpInside" id="MfP-Ul-Li9"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y0p-HC-wvk">
+                                <rect key="frame" x="324" y="449" width="50" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                <connections>
+                                    <action selector="deleteButtonTapped:" destination="Mev-16-2Bi" eventType="touchUpInside" id="Ay5-1p-ZdB"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rd-Ia-hie">
+                                <rect key="frame" x="113" y="539" width="0.0" height="0.0"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cTX-dF-xAC">
                                 <rect key="frame" x="50" y="700" width="80" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -268,29 +280,72 @@
                                     <action selector="goBack:" destination="Mev-16-2Bi" eventType="touchUpInside" id="TyV-BQ-YIN"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="elO-XN-zf6">
+                                <rect key="frame" x="231" y="70" width="122" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.32645974020000001" green="0.31136913329999999" blue="0.32553165090000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lM7-AP-SFP">
+                                <rect key="frame" x="58" y="70" width="35" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="0"/>
+                                <connections>
+                                    <action selector="flagButtonTapped:" destination="Mev-16-2Bi" eventType="touchUpInside" id="qOQ-uu-cBs"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KyR-Xt-QVh">
+                                <rect key="frame" x="143" y="623" width="105" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled">
+                                    <attributedString key="attributedTitle">
+                                        <fragment content="Upload">
+                                            <attributes>
+                                                <font key="NSFont" size="18" name="Helvetica-Bold"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                    </attributedString>
+                                    <color key="baseBackgroundColor" systemColor="systemMintColor"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="uploadProductToServer:" destination="Mev-16-2Bi" eventType="touchUpInside" id="Ft4-P5-7VL"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="9Vd-ml-EdC"/>
                         <color key="backgroundColor" red="0.098039127889999994" green="0.094047375020000004" blue="0.098039679229999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
                     <navigationItem key="navigationItem" id="YBG-pa-JSg"/>
                     <connections>
+                        <outlet property="UsernameTextBox" destination="elO-XN-zf6" id="lkg-9V-xGa"/>
                         <outlet property="deleteButton1" destination="KDF-eJ-OJ8" id="cWE-Bu-jHc"/>
                         <outlet property="deleteButton2" destination="o06-7D-j7K" id="gn6-OI-44T"/>
                         <outlet property="deleteButton3" destination="ofZ-EX-Dtx" id="yIw-He-w07"/>
                         <outlet property="deleteButton4" destination="5c3-Hw-mQI" id="ZMg-5N-Znp"/>
+                        <outlet property="deleteButton5" destination="bTg-tb-SZb" id="IbJ-fV-jiw"/>
+                        <outlet property="deleteButton6" destination="y0p-HC-wvk" id="BFq-MB-5tc"/>
+                        <outlet property="flagButton" destination="lM7-AP-SFP" id="GDl-vn-n3T"/>
                         <outlet property="imageView1" destination="kop-9P-Ejh" id="SBd-qz-cFx"/>
                         <outlet property="imageView2" destination="K3i-Yl-jdv" id="7Go-31-qEW"/>
                         <outlet property="imageView3" destination="6y3-U3-JwD" id="nqQ-QI-Qpl"/>
                         <outlet property="imageView4" destination="etB-4i-2lP" id="9Kb-pZ-qSH"/>
+                        <outlet property="imageView5" destination="URM-En-lyd" id="xHi-H2-bSf"/>
+                        <outlet property="imageView6" destination="PSO-LZ-2QM" id="2EE-Be-TwM"/>
                         <outlet property="next_button" destination="aWX-LK-2T9" id="gD6-Tg-SA1"/>
                         <outlet property="prev_button" destination="cTX-dF-xAC" id="QpG-0S-jUz"/>
                         <outlet property="product_upload_button" destination="Hu9-Hz-KtL" id="UNG-mX-6nM"/>
                         <outlet property="server_button" destination="KyR-Xt-QVh" id="rzi-ib-u1D"/>
+                        <segue destination="FT2-zi-WE4" kind="presentation" identifier="goLogIn2" id="Xlm-Ta-l1o"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qzo-0L-YOi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2272.5190839694656" y="3.5211267605633805"/>
+            <point key="canvasLocation" x="2207" y="4"/>
         </scene>
         <!--LogInOrSignUp-->
         <scene sceneID="Zg4-Ep-TvC">
@@ -516,19 +571,255 @@
                     <nil name="viewControllers"/>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="uIy-GJ-8Mm"/>
-                        <segue destination="FT2-zi-WE4" kind="modal" identifier="goLogin" id="380-mt-gHi"/>
+                        <segue destination="FT2-zi-WE4" kind="modal" identifier="goLogin" id="xSZ-z0-6Ob"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uvg-o7-2qD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1527" y="-660"/>
         </scene>
+        <!--Test-->
+        <scene sceneID="dhT-es-KBK">
+            <objects>
+                <viewController storyboardIdentifier="Test" title="Test" interactionActivityTrackingBaseName="Test" useStoryboardIdentifierAsRestorationIdentifier="YES" id="min-XK-Aep" customClass="TestViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Nfv-ws-2pP">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" id="uyL-La-sYY">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oOg-am-V5U">
+                                        <rect key="frame" x="270" y="700" width="80" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled">
+                                            <attributedString key="attributedTitle">
+                                                <fragment content="Submit">
+                                                    <attributes>
+                                                        <color key="NSColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                        <font key="NSFont" size="16" name="Helvetica-Bold"/>
+                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
+                                            <color key="baseBackgroundColor" systemColor="systemTealColor"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="goToNextPage:" destination="min-XK-Aep" eventType="touchUpInside" id="7oL-R4-qbz"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OPT-tQ-EBG">
+                                        <rect key="frame" x="89" y="135" width="213" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled">
+                                            <attributedString key="attributedTitle">
+                                                <fragment content="Add ">
+                                                    <attributes>
+                                                        <color key="NSColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <font key="NSFont" size="18" name="Helvetica-Bold"/>
+                                                        <font key="NSOriginalFont" size="12" name="Helvetica"/>
+                                                    </attributes>
+                                                </fragment>
+                                                <fragment content="Test">
+                                                    <attributes>
+                                                        <color key="NSColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <font key="NSFont" size="18" name="Helvetica-Bold"/>
+                                                    </attributes>
+                                                </fragment>
+                                                <fragment content=" images">
+                                                    <attributes>
+                                                        <color key="NSColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <font key="NSFont" size="18" name="Helvetica-Bold"/>
+                                                        <font key="NSOriginalFont" size="12" name="Helvetica"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
+                                            <color key="baseBackgroundColor" systemColor="systemMintColor"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="selectPhotosButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="gWA-1Q-ItS"/>
+                                        </connections>
+                                    </button>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vc2-F5-RZP">
+                                        <rect key="frame" x="30" y="196" width="160" height="116"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bKE-ok-fPs">
+                                        <rect key="frame" x="203" y="196" width="160" height="116"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fUg-2v-FcH">
+                                        <rect key="frame" x="30" y="323" width="160" height="116"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uJu-4y-baN">
+                                        <rect key="frame" x="203" y="323" width="160" height="116"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="loI-Fq-FUO">
+                                        <rect key="frame" x="151" y="193" width="50" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                        <connections>
+                                            <action selector="deleteButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="crx-y4-51z"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RbV-OK-k4t">
+                                        <rect key="frame" x="324" y="193" width="50" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                        <connections>
+                                            <action selector="deleteButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="Pf3-lc-FAa"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4tm-No-mwO">
+                                        <rect key="frame" x="151" y="320" width="50" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                        <connections>
+                                            <action selector="deleteButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="E2l-zg-sUI"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGr-bs-4jL">
+                                        <rect key="frame" x="324" y="320" width="50" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                        <connections>
+                                            <action selector="deleteButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="NTV-xt-B4a"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ScZ-Zu-W4w">
+                                        <rect key="frame" x="113" y="410" width="0.0" height="0.0"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E5c-ud-RJb">
+                                        <rect key="frame" x="30" y="450" width="160" height="116"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iCg-IE-Az0">
+                                        <rect key="frame" x="203" y="450" width="160" height="116"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LFz-if-BeJ">
+                                        <rect key="frame" x="151" y="447" width="50" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                        <connections>
+                                            <action selector="deleteButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="mC9-OF-cl5"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YJC-cp-9Mx">
+                                        <rect key="frame" x="324" y="447" width="50" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trash.circle.fill" catalog="system" title=""/>
+                                        <connections>
+                                            <action selector="deleteButtonTapped:" destination="min-XK-Aep" eventType="touchUpInside" id="zge-Pr-LjM"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lr8-Ee-UWT">
+                                        <rect key="frame" x="113" y="537" width="0.0" height="0.0"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S1b-pq-zdj">
+                                        <rect key="frame" x="50" y="700" width="80" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled">
+                                            <attributedString key="attributedTitle">
+                                                <fragment content="Back">
+                                                    <attributes>
+                                                        <color key="NSColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <font key="NSFont" size="18" name="Helvetica-Bold"/>
+                                                        <font key="NSOriginalFont" size="12" name="Helvetica"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
+                                            <color key="baseBackgroundColor" systemColor="systemTealColor"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="goBack:" destination="min-XK-Aep" eventType="touchUpInside" id="qyU-fl-573"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YaO-eC-4bV">
+                                        <rect key="frame" x="233" y="70" width="120" height="34"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.32645974020000001" green="0.31136913329999999" blue="0.32553165090000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RV0-Cv-Tvq">
+                                        <rect key="frame" x="143" y="618" width="105" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled">
+                                            <attributedString key="attributedTitle">
+                                                <fragment content="Upload">
+                                                    <attributes>
+                                                        <font key="NSFont" size="18" name="Helvetica-Bold"/>
+                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
+                                            <color key="baseBackgroundColor" systemColor="systemMintColor"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="uploadTestToServer:" destination="min-XK-Aep" eventType="touchUpInside" id="qWU-Q4-JJx"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <viewLayoutGuide key="safeArea" id="6aj-da-iGT"/>
+                                <color key="backgroundColor" red="0.098039127889999994" green="0.094047375020000004" blue="0.098039679229999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fdM-9M-XBT"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <outlet property="UsernameTextBox" destination="YaO-eC-4bV" id="Xfo-tH-hem"/>
+                        <outlet property="deleteButton1" destination="loI-Fq-FUO" id="DuM-xO-tbX"/>
+                        <outlet property="deleteButton2" destination="RbV-OK-k4t" id="WIE-Um-1TS"/>
+                        <outlet property="deleteButton3" destination="4tm-No-mwO" id="SAD-C9-pDW"/>
+                        <outlet property="deleteButton4" destination="oGr-bs-4jL" id="sIA-Ko-qYG"/>
+                        <outlet property="deleteButton5" destination="LFz-if-BeJ" id="xhI-Ot-tCP"/>
+                        <outlet property="deleteButton6" destination="YJC-cp-9Mx" id="bkJ-rd-lWl"/>
+                        <outlet property="imageView1" destination="Vc2-F5-RZP" id="pbS-aw-J7n"/>
+                        <outlet property="imageView2" destination="bKE-ok-fPs" id="o25-tc-AbA"/>
+                        <outlet property="imageView3" destination="fUg-2v-FcH" id="YWZ-Q0-VhQ"/>
+                        <outlet property="imageView4" destination="uJu-4y-baN" id="7Gd-9a-Ew6"/>
+                        <outlet property="imageView5" destination="E5c-ud-RJb" id="MxC-xM-xd9"/>
+                        <outlet property="imageView6" destination="iCg-IE-Az0" id="1GO-Id-G3e"/>
+                        <segue destination="FT2-zi-WE4" kind="presentation" identifier="goLogIn3" id="ydW-tT-vjS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OtS-Dg-5kB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2948.8549618320608" y="3.5211267605633805"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="380-mt-gHi"/>
+        <segue reference="ydW-tT-vjS"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="trash.circle.fill" catalog="system" width="128" height="123"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemGray4Color">
             <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

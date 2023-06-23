@@ -12,6 +12,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var tokenRefreshTimer: Timer?
     
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "goLogIn" {
+//            if let presentedVC = segue.destination as? logInViewController {
+//                presentedVC.isModalInPresentation = true
+//            }
+//        }
+//    }
+    
+    
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Perform actions when the app is about to enter the foreground
         // Check if the user needs to re-login
@@ -25,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let timeElapsed = currentDate.timeIntervalSince(lastLoginDate ?? Date.distantPast)
             let reloginInterval: TimeInterval = 30 * 60 // 30 minutes
+            
+            
             
             if timeElapsed >= reloginInterval {
                 // Perform re-login action
@@ -58,25 +69,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let lastLoginDate = UserDefaults.standard.object(forKey: "LastLoginDate") as? Date
         let currentDate = Date()
-        print("active...")
-        
-        print(currentDate,lastLoginDate)
         
         let timeInterval = currentDate.timeIntervalSince(lastLoginDate ?? currentDate)
         let elapsedTimeInSeconds = Int(timeInterval)
+        print("elapsedTimeInSeconds: ", elapsedTimeInSeconds)
         
-        let maxElapsedTimeInSeconds = 30 * 60 // Unit: second
-        
+        let maxElapsedTimeInSeconds = 5 // Unit: second
+
         if elapsedTimeInSeconds > maxElapsedTimeInSeconds {
+            print("needed")
             // Too much time has elapsed, force the user to login again
             // Present the login view controller or perform the segue to the login view controller
             UserDefaults.standard.set(false, forKey: "isLoggedIn")
-            DispatchQueue.main.async {
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let keyWindow = windowScene.windows.first {
-                    keyWindow.rootViewController?.performSegue(withIdentifier: "goLogin", sender: self)
-                }
-            }
+            
+//            DispatchQueue.main.async {
+//                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                   let keyWindow = windowScene.windows.first {
+//                    keyWindow.rootViewController?.performSegue(withIdentifier: "goLogin", sender: self)
+//                }
+//            }
         }
         startTokenRefreshTimer()
         return true
@@ -84,7 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func startTokenRefreshTimer() {
         print("startTokenRefreshTimer called")
-        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
+        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [weak self] _ in
             let defaults = UserDefaults.standard
             let refreshtoken = defaults.string(forKey: "refresh")
             self?.refreshAccessToken(refreshToken: refreshtoken ?? "no") { result in
