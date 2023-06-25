@@ -10,11 +10,13 @@ import PhotosUI
 import Foundation
 
 class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    @IBOutlet weak var scrollView: UIScrollView!
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goLogIn3" {
             if let presentedVC = segue.destination as? logInViewController {
                 presentedVC.isModalInPresentation = true
 //                presentedVC.delegate = self
+                
             }
         }
     }
@@ -25,22 +27,9 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     var barcodeImageData = ""
     var flagVal = 0
     var testImageDatas: [String] = []
+    var hasUpload = false
     
-
-    @IBOutlet weak var imageView1: UIImageView!
-    @IBOutlet weak var imageView2: UIImageView!
-    @IBOutlet weak var imageView3: UIImageView!
-    @IBOutlet weak var imageView4: UIImageView!
-    @IBOutlet weak var imageView5: UIImageView!
-    @IBOutlet weak var imageView6: UIImageView!
-    
-    
-    @IBOutlet weak var deleteButton1: UIButton!
-    @IBOutlet weak var deleteButton2: UIButton!
-    @IBOutlet weak var deleteButton4: UIButton!
-    @IBOutlet weak var deleteButton3: UIButton!
-    @IBOutlet weak var deleteButton5: UIButton!
-    @IBOutlet weak var deleteButton6: UIButton!
+    @IBOutlet weak var pic: UIImageView!
     
     @IBOutlet weak var UsernameTextBox: UITextField!
     
@@ -79,25 +68,21 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Hide the delete buttons initially
-        deleteButton1.isHidden = true
-        deleteButton2.isHidden = true
-        deleteButton3.isHidden = true
-        deleteButton4.isHidden = true
-        deleteButton5.isHidden = true
-        deleteButton6.isHidden = true
-        
-        imageView1.layer.cornerRadius = 4.0
-        imageView2.layer.cornerRadius = 4.0
-        imageView3.layer.cornerRadius = 4.0
-        imageView4.layer.cornerRadius = 4.0
-        imageView5.layer.cornerRadius = 4.0
-        imageView6.layer.cornerRadius = 4.0
-        
         let defaults = UserDefaults.standard
-        print(defaults.string(forKey: "username") as Any)
+        print("username",defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != Optional("none") {
             UsernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
+        }
+        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+        let profile_image_url = defaults.string(forKey: "profile_image_url")
+        let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+        let imageURL = URL(string: p)
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: imageURL!) {
+                DispatchQueue.main.async {
+                    self.pic.image = UIImage(data: data)
+                }
+            }
         }
     }
     
@@ -131,8 +116,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             guard let self = self else { return }
             
             var configuration = PHPickerConfiguration()
-            configuration.selectionLimit = 6 // Set the maximum number of photos to be selected
-
+            configuration.selectionLimit = 40 // Set the maximum number of photos to be selected
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             present(picker, animated: true, completion: nil)
@@ -144,51 +128,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         present(actionSheet, animated: true, completion: nil)
     }
 
-    
-    @IBAction func deleteButtonTapped(_ sender: UIButton) {
-        if sender == deleteButton1 && selectedImages.count > 0 {
-            // Delete action for the first image view
-            selectedImages.remove(at: 0)
-            updateImageViews()
-        } else if sender == deleteButton2 && selectedImages.count > 1 {
-            // Delete action for the second image view
-            selectedImages.remove(at: 1)
-            updateImageViews()
-        } else if sender == deleteButton3 && selectedImages.count > 2 {
-            // Delete action for the third image view
-            selectedImages.remove(at: 2)
-            updateImageViews()
-        } else if sender == deleteButton4 && selectedImages.count > 3 {
-            // Delete action for the fourth image view
-            selectedImages.remove(at: 3)
-            updateImageViews()
-        } else if sender == deleteButton5 && selectedImages.count > 4 {
-            // Delete action for the fourth image view
-            selectedImages.remove(at: 4)
-            updateImageViews()
-        } else if sender == deleteButton6 && selectedImages.count > 5 {
-            // Delete action for the fourth image view
-            selectedImages.remove(at: 5)
-            updateImageViews()
-        }
-    }
-    
-    func updateImageViews() {
-        let imageViews = [imageView1, imageView2, imageView3, imageView4, imageView5, imageView6]
-        let deleteButtons = [deleteButton1, deleteButton2, deleteButton3, deleteButton4, deleteButton5, deleteButton6]
-
-        for (index, imageView) in imageViews.enumerated() {
-            if index < selectedImages.count {
-                imageView?.image = selectedImages[index]
-                deleteButtons[index]?.isHidden = false
-            } else {
-                imageView?.image = nil
-                deleteButtons[index]?.isHidden = true
-            }
-        }
-    }
-
-
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
         for result in results {
@@ -196,9 +135,10 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
                     if let image = image as? UIImage {
                         DispatchQueue.main.async {
-                            if self?.selectedImages.count ?? 0 < 6 {
+                            if self?.selectedImages.count ?? 0 < 40 {
                                 self?.selectedImages.append(image)
-                                self?.updateImageViews()
+                                self?.updateScrollView()
+//                                self?.updateImageViews()
                             }
                         }
                     }
@@ -206,6 +146,57 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             }
         }
     }
+    func updateScrollView() {
+        scrollView.subviews.forEach { $0.removeFromSuperview() }
+
+        let scrollViewWidth: CGFloat = scrollView.bounds.width
+        let scrollViewHeight: CGFloat = scrollView.bounds.height
+        let spacing: CGFloat = 5.0 // Adjust the spacing here
+
+        var contentWidth: CGFloat = 0.0
+
+        for (index, image) in selectedImages.enumerated() {
+            let aspectRatio = image.size.width / image.size.height
+            let imageHeight = scrollViewHeight
+            let imageWidth = imageHeight * aspectRatio
+
+            let containerView = UIView(frame: CGRect(x: contentWidth, y: 0, width: imageWidth, height: scrollViewHeight))
+
+            let imageView = UIImageView(image: image)
+            imageView.contentMode = .scaleAspectFit
+            imageView.layer.cornerRadius = 4.7
+                imageView.clipsToBounds = true
+            imageView.frame = CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight)
+
+            containerView.addSubview(imageView)
+            
+            let deleteButton = UIButton(type: .system)
+            deleteButton.setTitle("Remove", for: .normal)
+            deleteButton.frame = CGRect(x: 0, y: imageHeight - 30, width: imageWidth, height: 30)
+            deleteButton.addTarget(self, action: #selector(deleteButtonTapped(_:)), for: .touchUpInside)
+            deleteButton.tag = index // Set the tag to identify the corresponding image
+            deleteButton.backgroundColor = UIColor.red.withAlphaComponent(0.35)
+            deleteButton.setTitleColor(.white, for: .normal)
+            deleteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+            
+            containerView.addSubview(deleteButton)
+
+            scrollView.addSubview(containerView)
+
+            contentWidth += imageWidth + spacing
+        }
+
+        scrollView.contentSize = CGSize(width: contentWidth, height: scrollViewHeight)
+    }
+
+    @objc func deleteButtonTapped(_ sender: UIButton) {
+        let index = sender.tag
+        // Remove the image from the selectedImages array
+        selectedImages.remove(at: index)
+        // Update the scroll view
+        updateScrollView()
+    }
+    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else {
@@ -213,100 +204,140 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             return
         }
         
-        if selectedImages.count < 6 {
+        if selectedImages.count < 40 {
             selectedImages.append(image)
-        }
-
-        let imageViews = [imageView1, imageView2, imageView3, imageView4]
-        for (index, imageView) in imageViews.enumerated() {
-            if index < selectedImages.count {
-                imageView?.image = selectedImages[index]
-            } else {
-                imageView?.image = nil
-            }
+            self.updateScrollView()
+//            self.updateImageViews()
         }
         
         self.dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func clearAllButtonTapped(_ sender: Any) {
+        let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .destructive) { [weak self] (_) in
+            // User confirmed, start a new session
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
+            self?.navigationController?.pushViewController(nextVC, animated: true)
+        }
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+
     
     @IBAction func goToNextPage(_ sender: Any) {
-        uploadData(sender) { [weak self] success in
-            if success {
-                self?.displaySuccess("Upload Succeed.")
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
-                self?.navigationController?.pushViewController(nextVC, animated: true)
-            } else {
-                // Handle upload failure
-            }
+        self.uploadTestToServer()
+
+        if self.AuthToken == "" || testImageDatas.count != selectedImages.count || self.allSuccessful == false {
+            displayWarning("All product Images needed to be uploaded successfully.")
+            return
         }
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let nextVC = storyboard.instantiateViewController(withIdentifier: "Final") as? FinalViewController {
+            // Pass the data to the test view controller
+            nextVC.flagVal = self.flagVal
+            nextVC.barcodeValue = self.barcodeValue
+            nextVC.barcodeImageData = self.barcodeImageData
+            nextVC.productImageDatas = self.productImageDatas
+            nextVC.testImageDatas = self.testImageDatas
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        }
+        
+//        uploadData(sender) { [weak self] success in
+//            if success {
+//                self?.displaySuccess("Upload Succeed.")
+//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
+//                self?.navigationController?.pushViewController(nextVC, animated: true)
+//            } else {
+//                // Handle upload failure
+//                self?.displayWarning("Upload to server failed")
+//            }
+//        }
     }
-    
-    func uploadData(_ sender: Any, completion: @escaping (Bool) -> Void) {
-        var uploadSuccessful = true
-        
-        // Convert the images to data
-        if self.AuthToken == "" || productImageDatas.count == 0 || testImageDatas.count == 0 || self.allSuccessful == false {
-            displayWarning("All images needed to be uploaded successfully.")
-            return
-        }
-        
-        print("testImageDatas num ", testImageDatas.count)
-        
-        // Create the request body
-        let flagValue = (flagVal == 0) ? "0" : "1"
-//        let credentials = getAppUserCredentials()
-        let requestBody: [String: Any] = [
-            "barcode_image": barcodeImageData,
-            "processed_barcode": barcodeValue,
-            "product_images": productImageDatas,
-            "test_images": testImageDatas,
-            "flag": flagValue
-        ]
-        
-        // Convert the request body to JSON data
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
-            displayWarning("uploadData: Failed to convert request body to JSON data")
-            return
-        }
-        
-        // Configure the request
-        guard let url = URL(string: "http://128.2.25.96:8000/enroll_capture") else {
-            displayWarning("uploadData: Invalid server URL")
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = jsonData
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let accesstoken_ = UserDefaults.standard.string(forKey: "access")!
-//        print("accesstoken_:",)
-        request.setValue("Bearer \(String(describing: accesstoken_))", forHTTPHeaderField: "Authorization")
-        
-        // Create a URLSession task for the request
-        let task = URLSession.shared.dataTask(with: request) { [weak self] (data1, response1, error1) in
-            if let httpResponse1 = response1 as? HTTPURLResponse, httpResponse1.statusCode == 200 {
-                print("Upload to server succeed with status code 200")
-            } else {
-                uploadSuccessful = false
-                // Handle error response
-                let httpResponse1 = response1 as? HTTPURLResponse
-                print(httpResponse1?.statusCode)
-                self?.displayWarning("Upload to server failed")
-            }
-        }
-        
-        // Start the URLSession task
-        task.resume()
-        
-        if uploadSuccessful {
-            completion(true)
-        } else {
-            completion(false)
-        }
-    }
+
+//    func uploadData(_ sender: Any, completion: @escaping (Bool) -> Void) {
+//        var uploadSuccessful = false
+//
+//        // Convert the images to data
+//        if self.AuthToken == "" || productImageDatas.count == 0 || testImageDatas.count == 0 || self.allSuccessful == false {
+//            print(AuthToken,productImageDatas.count,testImageDatas.count,self.allSuccessful)
+//            displayWarning("All images needed to be uploaded successfully.")
+//            return
+//        }
+//
+//        print("testImageDatas count:", testImageDatas.count)
+//        print("productImageDatas count:",productImageDatas.count)
+//        print(flagVal)
+//
+//        // Create the request body
+//        let requestBody: [String: Any] = [
+//            "barcode_image": barcodeImageData,
+//            "processed_barcode": barcodeValue,
+//            "product_images": productImageDatas,
+//            "test_images": testImageDatas,
+//            "flag": flagVal
+//        ]
+//
+//        // Convert the request body to JSON data
+//        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
+//            self.displayWarning("upload data error: Failed to convert request body to JSON data")
+//            print("uploadData: Failed to convert request body to JSON data")
+//            return
+//        }
+//
+//        // Configure the request
+//        guard let url = URL(string: "http://128.2.25.96:8003/enroll_captures/") else {
+//            self.displayWarning("uploadData: Invalid server URL")
+//            return
+//        }
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.httpBody = jsonData
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        let accesstoken_ = UserDefaults.standard.string(forKey: "access")!
+////        print(accesstoken_)
+//        request.setValue("Bearer \(String(describing: accesstoken_))", forHTTPHeaderField: "Authorization")
+//
+//        // Create a URLSession task for the request
+//        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
+//            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+//                print("Upload to server succeeded with status code 200")
+//                uploadSuccessful = true
+//            } else {
+//                uploadSuccessful = false
+//                // Handle error response
+//                let httpResponse = response as? HTTPURLResponse
+//                print("Upload to server failed with status code: \(httpResponse?.statusCode ?? -1)")
+//
+//                if let data = data {
+//                    if let responseString = String(data: data, encoding: .utf8) {
+//                        print("Response data: \(responseString)")
+//                    }
+//                }
+//
+//                self?.displayWarning("Upload to server failed")
+//            }
+//        }
+//
+//
+//        // Start the URLSession task
+//        task.resume()
+//
+//        if uploadSuccessful {
+//            completion(true)
+//        } else {
+//            completion(false)
+//        }
+//    }
     
     func displayWarning(_ message: String) {
         DispatchQueue.main.async {
@@ -342,9 +373,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         
         let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
         print(urlstring)
-        if container == "test" {
-            testImageDatas.append(urlstring)
-        }
+        testImageDatas.append(urlstring)
         
         guard let url = URL(string: "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)") else {
             print("Invalid URL")
@@ -384,7 +413,11 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         task.resume()
     }
     
-    @IBAction func uploadTestToServer(_ sender: Any) {
+    func uploadTestToServer() {
+        if hasUpload != false {
+//            self.displayWarning("Images already uploaded.")
+            return
+        }
         if selectedImages.count == 0 {
             self.displayWarning("Please upload test image(s).")
             return
@@ -408,7 +441,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         }
         
         print("start uploading test images to server")
-        
+        self.testImageDatas = []
         for image in selectedImages {
             guard let image_Data = image.jpegData(compressionQuality: 0.8) else {
                 displayWarning("Failed to convert image to data")
@@ -431,11 +464,12 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         
         if allSuccessful == true {
             self.displaySuccess("Upload succeed, thank you.")
+            self.hasUpload = true
         }
     }
     
     func getName(option: String) -> String {
-        let username = (UserDefaults.standard.string(forKey: "username"))!
+        let username = (UserDefaults.standard.string(forKey: "user_id"))!
         let upc = barcodeValue
         let uuid = UUID().uuidString
         let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"

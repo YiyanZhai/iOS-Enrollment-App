@@ -14,7 +14,6 @@ protocol LogInViewControllerDelegate: AnyObject {
 class logInViewController: UIViewController {
     weak var delegate: LogInViewControllerDelegate?
 
-
     @IBOutlet weak var email_text: UITextField!
     @IBOutlet weak var password_text: UITextField!
     
@@ -33,14 +32,95 @@ class logInViewController: UIViewController {
         }
         
         signIn(username: username, password: userpassword)
-        
-//        let defaults = UserDefaults.standard
-//        if let refresh = defaults.string(forKey: "refresh") {
-//            print(refresh)
-//        } else {
-//            print("Refresh token not found")
-//        }
     }
+    
+    
+    func getUserInfo() {
+        // Get the access token from UserDefaults or wherever it's stored
+        guard let accessToken = UserDefaults.standard.string(forKey: "access") else {
+            print("Access token not found")
+            return
+        }
+        // Create the request URL
+        guard let url = URL(string: "http://128.2.25.96:8003/auth/userinfo/") else {
+            print("Invalid URL")
+            return
+        }
+        // Create the request object
+        var request = URLRequest(url: url)
+        // Set the request method to GET
+        request.httpMethod = "GET"
+        // Set the Authorization header with the Bearer token
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        print("Bearer \(accessToken)")
+        // Create a URLSession task for the request
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                self.displayWarning("Getting User Information Failed","Request error: \(error)")
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                self.displayWarning("Getting User Information Failed","Invalid response")
+                return
+            }
+            // Check the status code of the response
+            if httpResponse.statusCode == 200 {
+                // Handle the successful response
+                if let data = data {
+                    do {
+                        // Parse the JSON response
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        if let responseJSON = json as? [String: Any],
+                           let username = responseJSON["username"] as? String,
+                           let user_id = responseJSON["user_id"] as? Int {
+                            let defaults = UserDefaults.standard
+                            defaults.set(username, forKey: "username")
+                            if let user_profile_url = responseJSON["user_profile_url"] as? String {
+                                print("User Profile URL: \(user_profile_url)")
+                                defaults.set(user_profile_url, forKey: "user_profile_url")
+                            } else {
+                                let defaultUrl = "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+                                defaults.set(defaultUrl, forKey: "user_profile_url")
+                            }
+                            defaults.set(user_id, forKey: "user_id")
+                            // Handle the user information
+                            print("Username: \(username)")
+                            print("User ID: \(user_id)")
+                        } else {
+                            self.displayWarning("Getting User Information Failed","Invalid server response")
+                        }
+                    } catch {
+                        self.displayWarning("Getting User Information Failed","JSON parsing error: \(error)")
+                    }
+                } else {
+                    self.displayWarning("Getting User Information Failed","No data received")
+                }
+            } else {
+                // Handle the error response
+                if let data = data {
+                    do {
+                        // Parse the JSON error response
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        if let errorJSON = json as? [String: Any],
+                           let detail = errorJSON["detail"] as? String {
+                            // Handle the error message
+                            self.displayWarning("Getting User Information Failed","Error: \(detail)")
+                        } else {
+                            self.displayWarning("Getting User Information Failed","Invalid error response")
+                        }
+                    } catch {
+                        self.displayWarning("Getting User Information Failed","JSON parsing error: \(error)")
+                    }
+                } else {
+                    self.displayWarning("Getting User Information Failed","No data received")
+                }
+            }
+        }
+        
+        // Start the URLSession task
+        task.resume()
+    }
+
 
     
     func signIn(username: String, password: String) {
@@ -58,7 +138,7 @@ class logInViewController: UIViewController {
         }
 
         // Configure the request
-        guard let url = URL(string: "http://128.2.25.96:8000/auth/login/token/") else {
+        guard let url = URL(string: "http://128.2.25.96:8003/auth/login/token/") else {
             displayWarning("Error", "Invalid server URL")
             return
         }
@@ -71,7 +151,7 @@ class logInViewController: UIViewController {
         // Create a URLSession task for the request
         let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                print("log in success with status code 200")
+                print("log in succeed with status code 200")
                 // Successful response
                 if let data = data,
                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
@@ -82,61 +162,14 @@ class logInViewController: UIViewController {
                     defaults.set(access, forKey: "access")
                     defaults.set(refresh, forKey: "refresh")
                     defaults.set(true, forKey: "isLoggedIn")
+                    defaults.set(username, forKey: "username")
                     self?.saveLoginDate()
-                    
-                    
-                    print("getting user info")
-                    guard let url1 = URL(string: "http://128.2.25.96:8000/auth/userinfo") else {
-                        print("Invalid URL")
-                        return
-                    }
-                    
-                    guard let accessToken = defaults.string(forKey: "access") else {
-                        print("no access token")
-                        return
-                    }
-                    
-                    var request1 = URLRequest(url: url1)
-                    request1.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-                    
-                    // Create a URLSession task for the request
-                    let task1 = URLSession.shared.dataTask(with: request1) { [weak self] (data1, response1, error1) in
-                        if let httpResponse1 = response1 as? HTTPURLResponse, httpResponse1.statusCode == 200 {
-                            print("get user info success with status code 200")
-                            // Successful response
-                            if let data2 = data1,
-                               let responseJSON1 = try? JSONSerialization.jsonObject(with: data2, options: []) as? [String: Any],
-                               let username_ = responseJSON1["username"] as? String {
-//                               let profile_image_url_ = responseJSON["profile_image_url"] as? String {
-                                    print("get user info succeed")
-                                    // Store access and refresh tokens
-                                    let defaults = UserDefaults.standard
-                                    defaults.set(username_, forKey: "username")
-//                                    defaults.set(profile_image_url_, forKey: "profile_image_url")
-                            } else {
-                                print("get user info failed")
-                            }
-                        } else {
-                            // Handle error response
-                            self?.displayWarning("get user info failed", "Please try again.")
-//                            if let data2 = data1,
-//                               let responseJSON1 = try? JSONSerialization.jsonObject(with: data2, options: []) as? [String: Any],
-//                               let message = responseJSON["detail"] as? String {
-//                                self?.displayWarning("get user info failed", "\(message)")
-//                            } else {
-//                                self?.displayWarning("get user info failed", "Please try again.")
-//                            }
-                        }
-                    }
-
-                    // Start the URLSession task
-                    task1.resume()
-                    
+                    self?.getUserInfo()
                     // Access the app delegate instance
                     DispatchQueue.main.async {
                         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                             // Call the startTokenRefreshTimer() method
-                            print("refresh restart")
+                            print("Refreshing restarted after logging in...")
                             appDelegate.startTokenRefreshTimer()
                         }
                         self?.dismiss(animated: true, completion: nil)

@@ -24,15 +24,11 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear on first")
         let defaults = UserDefaults.standard
         print("viewDidAppear: isLoggedIn? ",defaults.bool(forKey: "isLoggedIn"))
         if defaults.bool(forKey: "isLoggedIn") == false {
             self.performSegue(withIdentifier: "goLogIn", sender: self)
-        }
-        
-        print(defaults.string(forKey: "username")!)
-        if defaults.string(forKey: "username") != Optional("none") {
-            usernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
         }
         
         // Add a tap gesture recognizer to the usernameTextBox
@@ -55,26 +51,42 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBOutlet weak var next_button: UIButton!
     @IBOutlet weak var textbox: UITextField!
     
+    @IBOutlet weak var pic: UIImageView!
+    
     var isBarcodeUploaded: Bool = false
     @IBOutlet weak var usernameTextBox: UITextField!
     
     override func viewDidLoad() {
-        print("viewDidLoad")
+        print("viewDidLoad on first")
         super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(true, animated: false)
         self.textbox.delegate = self
         self.navigationController?.navigationBar.isHidden=true
+        
+        let defaults = UserDefaults.standard
+        print(defaults.string(forKey: "username") as Any)
+        if defaults.string(forKey: "username") != nil {
+            usernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
+        } else {
+            self.performSegue(withIdentifier: "goLogIn", sender: self)
+        }
+        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+        let profile_image_url = defaults.string(forKey: "profile_image_url")
+        var p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+        let imageURL = URL(string: p)
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: imageURL!) {
+                DispatchQueue.main.async {
+                    self.pic.image = UIImage(data: data)
+                }
+            }
+        }
         
         // Add a tap gesture recognizer to dismiss the keyboard when tapping outside the text field
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
         
         self.imageView.layer.cornerRadius = 7.0
-        
-        let defaults = UserDefaults.standard
-//        print(defaults.string(forKey: "username")!)
-        if defaults.string(forKey: "username") != Optional("none") {
-            usernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
-        }
     }
     
     @objc func showLogoutOption() {
@@ -119,14 +131,11 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
             // Pass the data to the second view controller
             nextVC.barcodeValue = barcodeValue
             nextVC.barcodeImage = barcodeImage
-            
             self.navigationController?.pushViewController(nextVC, animated: true)
         }
     }
     
     @IBAction func uploadButtonTapped(_ sender: UIButton) {
-        let defaults = UserDefaults.standard, token = defaults.string(forKey: "refresh") ?? "default value"
-        print("Received data from modal: \(token)")
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)

@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let currentDate = Date()
             
             let timeElapsed = currentDate.timeIntervalSince(lastLoginDate ?? Date.distantPast)
-            let reloginInterval: TimeInterval = 30 * 60 // 30 minutes
+            let reloginInterval: TimeInterval = 24 * 60 * 60
             
             
             
@@ -74,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let elapsedTimeInSeconds = Int(timeInterval)
         print("elapsedTimeInSeconds: ", elapsedTimeInSeconds)
         
-        let maxElapsedTimeInSeconds = 5 // Unit: second
+        let maxElapsedTimeInSeconds = 26 * 60 // Unit: second
 
         if elapsedTimeInSeconds > maxElapsedTimeInSeconds {
             print("needed")
@@ -95,7 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func startTokenRefreshTimer() {
         print("startTokenRefreshTimer called")
-        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [weak self] _ in
+        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 25 * 60, repeats: true) { [weak self] _ in
             let defaults = UserDefaults.standard
             let refreshtoken = defaults.string(forKey: "refresh")
             self?.refreshAccessToken(refreshToken: refreshtoken ?? "no") { result in
@@ -114,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func refreshAccessToken(refreshToken: String, completion: @escaping (Result<String, Error>) -> Void) {
         print("refreshAccessToken")
-        guard let url = URL(string: "http://128.2.25.96:8000/auth/login/token/refresh/") else {
+        guard let url = URL(string: "http://128.2.25.96:8003/auth/login/token/refresh/") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }
@@ -138,7 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Create a URLSession task for the request
         let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                print("success with status code 200")
+                print("refresh succeed!")
                 // Successful response
                 if let data = data,
                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
@@ -148,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let defaults = UserDefaults.standard
                     defaults.set(access, forKey: "access")
                     defaults.set(refresh, forKey: "refresh")
-                    print("refresh after refresh: ", refresh)
+//                    print("refresh code after refresh: ", refresh)
                 } else {
                     print("Refresh failed", "Invalid server response")
                 }

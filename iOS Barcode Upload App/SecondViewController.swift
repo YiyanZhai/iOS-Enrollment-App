@@ -8,59 +8,57 @@
 import UIKit
 import PhotosUI
 import Foundation
+import AVFoundation
 
 class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    private let maxPhotoCount = 40
+    
+    var hasUpload = false
     
     // from FirstViewController
     var barcodeValue: String = ""
     var barcodeImage: UIImage?
+    
     var AuthToken = ""
     var allSuccessful = false
     var productImageDatas: [String] = []
     var barcodeImageData = ""
     
     @IBOutlet weak var UsernameTextBox: UITextField!
-    @IBOutlet weak var imageView1: UIImageView!
-    @IBOutlet weak var imageView2: UIImageView!
-    @IBOutlet weak var imageView3: UIImageView!
-    @IBOutlet weak var imageView4: UIImageView!
-    @IBOutlet weak var imageView5: UIImageView!
-    @IBOutlet weak var imageView6: UIImageView!
+    @IBOutlet weak var pic: UIImageView!
     
     private var flagValue = 0
     
     override func viewDidLoad() {
+        print("viewDidLoad second")
         super.viewDidLoad()
         
         self.flagValue = 0
-        flagButton.setTitle("0", for: .normal)
         let color: UIColor = (flagValue == 0) ? .green : .red
-        flagButton.backgroundColor = color
+        flagButton.tintColor = color
         
         // Hide the delete buttons initially
-        deleteButton1.isHidden = true
-        deleteButton2.isHidden = true
-        deleteButton3.isHidden = true
-        deleteButton4.isHidden = true
-        deleteButton5.isHidden = true
-        deleteButton6.isHidden = true
-        
-        imageView1.layer.cornerRadius = 4.0
-        imageView2.layer.cornerRadius = 4.0
-        imageView3.layer.cornerRadius = 4.0
-        imageView4.layer.cornerRadius = 4.0
-        imageView5.layer.cornerRadius = 4.0
-        imageView6.layer.cornerRadius = 4.0
         
         let defaults = UserDefaults.standard
-        print(defaults.string(forKey: "username") as Any)
+        print("username",defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != Optional("none") {
             UsernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
+        }
+        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+        let profile_image_url = defaults.string(forKey: "profile_image_url")
+        let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+        let imageURL = URL(string: p)
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: imageURL!) {
+                DispatchQueue.main.async {
+                    self.pic.image = UIImage(data: data)
+                }
+            }
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("viewDidAppear")
+        print("viewDidAppear second")
         let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
         UsernameTextBox.addGestureRecognizer(tapGesture1)
         UsernameTextBox.isUserInteractionEnabled = true
@@ -68,10 +66,10 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     
     @IBAction func flagButtonTapped(_ sender: Any) {
         flagValue = (flagValue == 0) ? 1 : 0
-        let title = "\(flagValue)"
-        flagButton.setTitle(title, for: .normal)
+//        let title = "\(flagValue)"
+//        flagButton.setTitle(title, for: .normal)
         let color: UIColor = (flagValue == 0) ? .green : .red
-        flagButton.backgroundColor = color
+        flagButton.tintColor = color
     }
     
     
@@ -86,9 +84,9 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         
         alertController.addAction(logoutAction)
         alertController.addAction(cancelAction)
-        
         present(alertController, animated: true, completion: nil)
     }
+    
     func logOutTapped() {
         NotificationCenter.default.post(name: Notification.Name("LogoutNotification"), object: nil)
 
@@ -97,30 +95,23 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         defaults.set(false, forKey: "isLoggedIn")
         self.performSegue(withIdentifier: "goLogIn2", sender: self)
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goLogIn2" {
             if let presentedVC = segue.destination as? logInViewController {
                 presentedVC.isModalInPresentation = true
-//                presentedVC.delegate = self
             }
         }
     }
     
-    @IBOutlet weak var deleteButton1: UIButton!
-    @IBOutlet weak var deleteButton2: UIButton!
-    @IBOutlet weak var deleteButton3: UIButton!
-    @IBOutlet weak var deleteButton4: UIButton!
-    @IBOutlet weak var deleteButton5: UIButton!
-    @IBOutlet weak var deleteButton6: UIButton!
-    
     @IBOutlet weak var flagButton: UIButton!
-    
-    @IBOutlet weak var server_button: UIButton!
     
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
     
     @IBOutlet weak var product_upload_button: UIButton!
+    
+    @IBOutlet weak var scrollView: UIScrollView!
     
     var selectedImages: [UIImage] = []
     
@@ -139,69 +130,20 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
                 self.present(alert, animated: true, completion: nil)
             }
         }
-        
-        
         let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
             guard let self = self else { return }
             
             var configuration = PHPickerConfiguration()
-            configuration.selectionLimit = 6 // Set the maximum number of photos to be selected
+            configuration.selectionLimit = self.maxPhotoCount // Set the maximum number of photos to be selected
 
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             present(picker, animated: true, completion: nil)
         }
-        
         actionSheet.addAction(cameraAction)
         actionSheet.addAction(libraryAction)
-        
         present(actionSheet, animated: true, completion: nil)
     }
-
-    
-    @IBAction func deleteButtonTapped(_ sender: UIButton) {
-        if sender == deleteButton1 && selectedImages.count > 0 {
-            // Delete action for the first image view
-            selectedImages.remove(at: 0)
-            updateImageViews()
-        } else if sender == deleteButton2 && selectedImages.count > 1 {
-            // Delete action for the second image view
-            selectedImages.remove(at: 1)
-            updateImageViews()
-        } else if sender == deleteButton3 && selectedImages.count > 2 {
-            // Delete action for the third image view
-            selectedImages.remove(at: 2)
-            updateImageViews()
-        } else if sender == deleteButton4 && selectedImages.count > 3 {
-            // Delete action for the fourth image view
-            selectedImages.remove(at: 3)
-            updateImageViews()
-        } else if sender == deleteButton5 && selectedImages.count > 4 {
-            // Delete action for the fourth image view
-            selectedImages.remove(at: 4)
-            updateImageViews()
-        } else if sender == deleteButton6 && selectedImages.count > 5 {
-            // Delete action for the fourth image view
-            selectedImages.remove(at: 5)
-            updateImageViews()
-        }
-    }
-    
-    func updateImageViews() {
-        let imageViews = [imageView1, imageView2, imageView3, imageView4, imageView5, imageView6]
-        let deleteButtons = [deleteButton1, deleteButton2, deleteButton3, deleteButton4, deleteButton5, deleteButton6]
-
-        for (index, imageView) in imageViews.enumerated() {
-            if index < selectedImages.count {
-                imageView?.image = selectedImages[index]
-                deleteButtons[index]?.isHidden = false
-            } else {
-                imageView?.image = nil
-                deleteButtons[index]?.isHidden = true
-            }
-        }
-    }
-
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
@@ -210,9 +152,10 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
                 result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
                     if let image = image as? UIImage {
                         DispatchQueue.main.async {
-                            if self?.selectedImages.count ?? 0 < 6 {
+                            if self?.selectedImages.count ?? 0 < 40 {
                                 self?.selectedImages.append(image)
-                                self?.updateImageViews()
+                                self?.updateScrollView()
+//                                self?.updateImageViews()
                             }
                         }
                     }
@@ -221,35 +164,80 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         }
     }
     
+    func updateScrollView() {
+        scrollView.subviews.forEach { $0.removeFromSuperview() }
+
+        let scrollViewHeight: CGFloat = scrollView.bounds.height
+        let spacing: CGFloat = 5.0 // Adjust the spacing here
+
+        var contentWidth: CGFloat = 0.0
+
+        for (index, image) in selectedImages.enumerated() {
+            let aspectRatio = image.size.width / image.size.height
+            let imageHeight = scrollViewHeight
+            let imageWidth = imageHeight * aspectRatio
+
+            let containerView = UIView(frame: CGRect(x: contentWidth, y: 0, width: imageWidth, height: scrollViewHeight))
+
+            let imageView = UIImageView(image: image)
+            imageView.contentMode = .scaleAspectFit
+            imageView.layer.cornerRadius = 4.7
+                imageView.clipsToBounds = true
+            imageView.frame = CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight)
+
+            containerView.addSubview(imageView)
+            
+            let deleteButton = UIButton(type: .system)
+            deleteButton.setTitle("Remove", for: .normal)
+            deleteButton.frame = CGRect(x: 0, y: imageHeight - 30, width: imageWidth, height: 30)
+            deleteButton.addTarget(self, action: #selector(deleteButtonTapped(_:)), for: .touchUpInside)
+            deleteButton.tag = index // Set the tag to identify the corresponding image
+            // Set colors
+            deleteButton.backgroundColor = UIColor.red.withAlphaComponent(0.35)
+            deleteButton.setTitleColor(.white, for: .normal)
+            deleteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+            containerView.addSubview(deleteButton)
+
+            scrollView.addSubview(containerView)
+
+            contentWidth += imageWidth + spacing
+        }
+
+        scrollView.contentSize = CGSize(width: contentWidth, height: scrollViewHeight)
+    }
+
+    @objc func deleteButtonTapped(_ sender: UIButton) {
+        let index = sender.tag
+        // Remove the image from the selectedImages array
+        selectedImages.remove(at: index)
+        // Update the scroll view
+        updateScrollView()
+    }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else {
             dismiss(animated: true, completion: nil)
             return
         }
         
-        if selectedImages.count < 6 {
+        if selectedImages.count < self.maxPhotoCount {
             selectedImages.append(image)
+            self.updateScrollView()
+//            self.updateImageViews()
         }
 
-        let imageViews = [imageView1, imageView2, imageView3, imageView4, imageView5, imageView6]
-        for (index, imageView) in imageViews.enumerated() {
-            if index < selectedImages.count {
-                imageView?.image = selectedImages[index]
-            } else {
-                imageView?.image = nil
-            }
-        }
-        
         self.dismiss(animated: true, completion: nil)
     }
     
     
     @IBAction func goToNextPage(_ sender: Any) {
-        if self.AuthToken == "" || productImageDatas.count == 0 || self.allSuccessful == false {
+        self.uploadProductToServer()
+        
+        if self.AuthToken == "" || productImageDatas.count != selectedImages.count || self.allSuccessful == false {
             displayWarning("All product Images needed to be uploaded successfully.")
             return
         }
-        
+        print("All product Images is uploaded successfully.")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let nextVC = storyboard.instantiateViewController(withIdentifier: "Test") as? TestViewController {
             // Pass the data to the test view controller
@@ -259,118 +247,15 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
             nextVC.allSuccessful = self.allSuccessful
             nextVC.barcodeImageData = self.barcodeImageData
             nextVC.productImageDatas = self.productImageDatas
-            
+
             self.navigationController?.pushViewController(nextVC, animated: true)
         }
-        
-//        uploadData(sender) { [weak self] success in
-//            if success {
-//                self?.displaySuccess("Upload Succeed.")
-//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                if let nextVC = storyboard.instantiateViewController(withIdentifier: "Test") as? TestViewController {
-//                    // Pass the data to the second view controller
-//                    nextVC.barcodeValue = self!.barcodeValue
-////                    nextVC.barcodeImage = self.barcodeImage
-//                    self?.navigationController?.pushViewController(nextVC, animated: true)
-//                }
-//            } else {
-//                // Handle upload failure
-//            }
-//        }
     }
     
     @IBAction func goBack(_ sender: Any) {
-        self.navigationController?.popViewController(animated: false)
+        self.navigationController?.popViewController(animated: true)
     }
     
-//    func getAppUserCredentials() -> String {
-//        // Retrieve the user credentials
-//        return UserDefaults.standard.string(forKey: "username") ?? ""
-//    }
-    
-    
-//    func uploadData(_ sender: Any, completion: @escaping (Bool) -> Void) {
-//        var uploadSuccessful = true
-//
-//        // Convert the images to data
-//        if self.AuthToken == "" || productImageDatas.count == 0 || self.allSuccessful == false {
-//            displayWarning("All product Images needed to be uploaded successfully.")
-//            return
-//        }
-//
-//        print("productImageDatas num ", productImageDatas.count)
-//
-//        // Create the request body
-////        let credentials = getAppUserCredentials()
-//        let requestBody: [String: Any] = [
-//            "barcode_image": barcodeImageData,
-//            "processed_barcode": barcodeValue,
-//            "product_images": productImageDatas
-//        ]
-//
-//        // Convert the request body to JSON data
-//        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
-//            displayWarning("uploadData: Failed to convert request body to JSON data")
-//            return
-//        }
-//
-//        // Configure the request
-//        guard let url = URL(string: "http://128.2.25.96:8000/enroll_barcode_productimages") else {
-//            displayWarning("uploadData: Invalid server URL")
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        request.httpBody = jsonData
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        let accesstoken_ = UserDefaults.standard.string(forKey: "access")!
-////        print("accesstoken_:",)
-//        request.setValue("Bearer \(String(describing: accesstoken_))", forHTTPHeaderField: "Authorization")
-//
-//        // Create a URLSession task for the request
-//        let task = URLSession.shared.dataTask(with: request) { [weak self] (data1, response1, error1) in
-//            if let httpResponse1 = response1 as? HTTPURLResponse, httpResponse1.statusCode == 200 {
-//                print("Upload to server succeed with status code 200")
-//            } else {
-//                uploadSuccessful = false
-//                // Handle error response
-//                let httpResponse1 = response1 as? HTTPURLResponse
-//                print(httpResponse1?.statusCode)
-//                self?.displayWarning("Upload to server failed")
-//            }
-//        }
-//
-//        // Start the URLSession task
-//        task.resume()
-//
-//        if uploadSuccessful {
-//            completion(true)
-//        } else {
-//            completion(false)
-//        }
-//    }
-    
-    func displayWarning(_ message: String) {
-        DispatchQueue.main.async {
-            let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-//    func displayWarning(_ message: String) {
-//        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//        present(alert, animated: true, completion: nil)
-//    }
-
-    func displaySuccess(_ message: String) {
-        DispatchQueue.main.async {
-            let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
     func getCurrentDateTime() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -388,9 +273,10 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         let storageAccount = "ultronai4walmart"
         let container = option
         
-        var urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
+        let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
         print(urlstring)
-        if container == "barcode" {
+        if container == "barcode-captures" {
+            print("b!")
             barcodeImageData = urlstring
         } else {
             productImageDatas.append(urlstring)
@@ -434,7 +320,11 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         task.resume()
     }
     
-    @IBAction func uploadProductToServer(_ sender: Any) {
+    func uploadProductToServer() {
+        if hasUpload != false {
+//            self.displayWarning("You already successfully uploaded the image(s).")
+            return
+        }
         if selectedImages.count == 0 {
             self.displayWarning("Please upload product image(s).")
             return
@@ -474,6 +364,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         
         print("start uploading product images to server")
         
+        self.productImageDatas = []
         for image in selectedImages {
             self.allSuccessful = true
             guard let image_Data = image.jpegData(compressionQuality: 0.8) else {
@@ -497,11 +388,31 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         
         if allSuccessful == true {
             self.displaySuccess("Upload succeed, thank you.")
+            hasUpload = true
         }
+
     }
+    @IBAction func clearAllButtonTapped(_ sender: Any) {
+        let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .destructive) { [weak self] (_) in
+            // User confirmed, start a new session
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
+            self?.navigationController?.pushViewController(nextVC, animated: true)
+        }
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+
     
     func getName(option: String) -> String {
-        let username = (UserDefaults.standard.string(forKey: "username"))!
+        let username = (UserDefaults.standard.string(forKey: "user_id"))!
+//        let username = "default"
         let upc = barcodeValue
         let uuid = UUID().uuidString
         let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"
@@ -551,5 +462,19 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     }
 
 
+    func displayWarning(_ message: String) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    func displaySuccess(_ message: String) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
 }
 
