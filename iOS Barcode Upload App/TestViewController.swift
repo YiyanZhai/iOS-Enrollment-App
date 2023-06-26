@@ -15,11 +15,11 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         if segue.identifier == "goLogIn3" {
             if let presentedVC = segue.destination as? logInViewController {
                 presentedVC.isModalInPresentation = true
-//                presentedVC.delegate = self
-                
             }
         }
     }
+    var selectedImages: [UIImage] = []
+    
     var barcodeValue: String = ""
     var AuthToken = ""
     var allSuccessful = true;
@@ -34,7 +34,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     @IBOutlet weak var UsernameTextBox: UITextField!
     
     override func viewDidAppear(_ animated: Bool) {
-        print(self.barcodeValue)
         print("viewDidAppear")
         let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
         UsernameTextBox.addGestureRecognizer(tapGesture1)
@@ -68,6 +67,11 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let sharedData = DataStore.shared
+        self.selectedImages = sharedData.selectedTestImages
+//        self.hasUpload = sharedData.hasUploadTest
+        self.updateScrollView()
+        
         let defaults = UserDefaults.standard
         print("username",defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != Optional("none") {
@@ -87,13 +91,10 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     }
     
     @IBAction func goBack(_ sender: Any) {
+        let sharedData = DataStore.shared
+        sharedData.selectedTestImages = self.selectedImages // Set the selectedImages value
         self.navigationController?.popViewController(animated: true)
     }
-    
-    @IBOutlet weak var server_button: UIButton!
-    @IBOutlet weak var product_upload_button: UIButton!
-    
-    var selectedImages: [UIImage] = []
     
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
         let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
@@ -139,7 +140,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                             if self?.selectedImages.count ?? 0 < 40 {
                                 self?.selectedImages.append(image)
                                 self?.updateScrollView()
-//                                self?.updateImageViews()
                             }
                         }
                     }
@@ -207,7 +207,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         if selectedImages.count < 40 {
             selectedImages.append(image)
             self.updateScrollView()
-//            self.updateImageViews()
         }
         
         self.dismiss(animated: true, completion: nil)
@@ -249,95 +248,8 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             nextVC.testImageDatas = self.testImageDatas
             self.navigationController?.pushViewController(nextVC, animated: true)
         }
-        
-//        uploadData(sender) { [weak self] success in
-//            if success {
-//                self?.displaySuccess("Upload Succeed.")
-//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
-//                self?.navigationController?.pushViewController(nextVC, animated: true)
-//            } else {
-//                // Handle upload failure
-//                self?.displayWarning("Upload to server failed")
-//            }
-//        }
     }
-
-//    func uploadData(_ sender: Any, completion: @escaping (Bool) -> Void) {
-//        var uploadSuccessful = false
-//
-//        // Convert the images to data
-//        if self.AuthToken == "" || productImageDatas.count == 0 || testImageDatas.count == 0 || self.allSuccessful == false {
-//            print(AuthToken,productImageDatas.count,testImageDatas.count,self.allSuccessful)
-//            displayWarning("All images needed to be uploaded successfully.")
-//            return
-//        }
-//
-//        print("testImageDatas count:", testImageDatas.count)
-//        print("productImageDatas count:",productImageDatas.count)
-//        print(flagVal)
-//
-//        // Create the request body
-//        let requestBody: [String: Any] = [
-//            "barcode_image": barcodeImageData,
-//            "processed_barcode": barcodeValue,
-//            "product_images": productImageDatas,
-//            "test_images": testImageDatas,
-//            "flag": flagVal
-//        ]
-//
-//        // Convert the request body to JSON data
-//        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
-//            self.displayWarning("upload data error: Failed to convert request body to JSON data")
-//            print("uploadData: Failed to convert request body to JSON data")
-//            return
-//        }
-//
-//        // Configure the request
-//        guard let url = URL(string: "http://128.2.25.96:8003/enroll_captures/") else {
-//            self.displayWarning("uploadData: Invalid server URL")
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        request.httpBody = jsonData
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        let accesstoken_ = UserDefaults.standard.string(forKey: "access")!
-////        print(accesstoken_)
-//        request.setValue("Bearer \(String(describing: accesstoken_))", forHTTPHeaderField: "Authorization")
-//
-//        // Create a URLSession task for the request
-//        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
-//            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-//                print("Upload to server succeeded with status code 200")
-//                uploadSuccessful = true
-//            } else {
-//                uploadSuccessful = false
-//                // Handle error response
-//                let httpResponse = response as? HTTPURLResponse
-//                print("Upload to server failed with status code: \(httpResponse?.statusCode ?? -1)")
-//
-//                if let data = data {
-//                    if let responseString = String(data: data, encoding: .utf8) {
-//                        print("Response data: \(responseString)")
-//                    }
-//                }
-//
-//                self?.displayWarning("Upload to server failed")
-//            }
-//        }
-//
-//
-//        // Start the URLSession task
-//        task.resume()
-//
-//        if uploadSuccessful {
-//            completion(true)
-//        } else {
-//            completion(false)
-//        }
-//    }
+    
     
     func displayWarning(_ message: String) {
         DispatchQueue.main.async {
@@ -375,7 +287,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         print(urlstring)
         testImageDatas.append(urlstring)
         
-        guard let url = URL(string: "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)") else {
+        guard let url = URL(string: urlstring) else {
             print("Invalid URL")
             return
         }
@@ -389,7 +301,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = ""
-        let currentTimeString = dateFormatter.string(from: currentDate)
         let dateString = getCurrentDateTime()
         request.setValue(dateString, forHTTPHeaderField: "x-ms-date")
         let session = URLSession.shared
@@ -415,7 +326,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     
     func uploadTestToServer() {
         if hasUpload != false {
-//            self.displayWarning("Images already uploaded.")
+            self.displayWarning("Images already uploaded.")
             return
         }
         if selectedImages.count == 0 {
@@ -442,6 +353,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         
         print("start uploading test images to server")
         self.testImageDatas = []
+        self.allSuccessful = true
         for image in selectedImages {
             guard let image_Data = image.jpegData(compressionQuality: 0.8) else {
                 displayWarning("Failed to convert image to data")
@@ -463,7 +375,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         }
         
         if allSuccessful == true {
-            self.displaySuccess("Upload succeed, thank you.")
+//            self.displaySuccess("Upload succeed, thank you.")
             self.hasUpload = true
         }
     }

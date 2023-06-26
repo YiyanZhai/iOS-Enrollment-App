@@ -33,7 +33,17 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         print("viewDidLoad second")
         super.viewDidLoad()
         
-        self.flagValue = 0
+        let sharedData = DataStore.shared
+        self.selectedImages = sharedData.selectedProductImages
+        self.updateScrollView()
+//        self.hasUpload = sharedData.hasUploadProduct
+//        if self.selectedImages.count != 0 {
+//            self.isReuse = true
+//        }
+//        self.allSuccessful = sharedData.allSuccessful
+//        self.AuthToken = sharedData.AuthToken
+        
+        self.flagValue = sharedData.flagValue
         let color: UIColor = (flagValue == 0) ? .green : .red
         flagButton.tintColor = color
         
@@ -135,7 +145,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
             
             var configuration = PHPickerConfiguration()
             configuration.selectionLimit = self.maxPhotoCount // Set the maximum number of photos to be selected
-
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             present(picker, animated: true, completion: nil)
@@ -223,7 +232,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         if selectedImages.count < self.maxPhotoCount {
             selectedImages.append(image)
             self.updateScrollView()
-//            self.updateImageViews()
         }
 
         self.dismiss(animated: true, completion: nil)
@@ -233,10 +241,11 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     @IBAction func goToNextPage(_ sender: Any) {
         self.uploadProductToServer()
         
-        if self.AuthToken == "" || productImageDatas.count != selectedImages.count || self.allSuccessful == false {
+        if (self.AuthToken == "" || productImageDatas.count != selectedImages.count || self.allSuccessful == false) {
             displayWarning("All product Images needed to be uploaded successfully.")
             return
         }
+        
         print("All product Images is uploaded successfully.")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let nextVC = storyboard.instantiateViewController(withIdentifier: "Test") as? TestViewController {
@@ -253,6 +262,12 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     }
     
     @IBAction func goBack(_ sender: Any) {
+        let sharedData = DataStore.shared
+        sharedData.selectedProductImages = self.selectedImages // Set the selectedImages value
+        sharedData.flagValue = self.flagValue
+//        sharedData.hasUploadProduct = self.hasUpload // Set the hasUpload value
+//        sharedData.AuthToken = self.AuthToken
+//        sharedData.allSuccessful = self.allSuccessful
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -276,9 +291,9 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
         print(urlstring)
         if container == "barcode-captures" {
-            print("b!")
             barcodeImageData = urlstring
         } else {
+            
             productImageDatas.append(urlstring)
         }
         
@@ -293,10 +308,8 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         request.setValue("BlockBlob", forHTTPHeaderField: "x-ms-blob-type")
         request.setValue("Bearer \(auth)", forHTTPHeaderField: "Authorization")
         request.setValue("2020-08-04", forHTTPHeaderField: "x-ms-version")
-        let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = ""
-        let currentTimeString = dateFormatter.string(from: currentDate)
         let dateString = getCurrentDateTime()
         request.setValue(dateString, forHTTPHeaderField: "x-ms-date")
         let session = URLSession.shared
@@ -322,7 +335,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     
     func uploadProductToServer() {
         if hasUpload != false {
-//            self.displayWarning("You already successfully uploaded the image(s).")
+            self.displayWarning("You already successfully uploaded the image(s).")
             return
         }
         if selectedImages.count == 0 {
@@ -365,8 +378,8 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         print("start uploading product images to server")
         
         self.productImageDatas = []
+        self.allSuccessful = true
         for image in selectedImages {
-            self.allSuccessful = true
             guard let image_Data = image.jpegData(compressionQuality: 0.8) else {
                 displayWarning("Failed to convert product image to data")
                 return
@@ -387,7 +400,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         }
         
         if allSuccessful == true {
-            self.displaySuccess("Upload succeed, thank you.")
+//            self.displaySuccess("Upload succeed, thank you.")
             hasUpload = true
         }
 

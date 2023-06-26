@@ -106,6 +106,9 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
         uploadData(sender) { [weak self] success in
             if success {
                 self?.displaySuccess("Upload Succeeded.") { // Add completion handler
+                    let sharedData = DataStore.shared
+                    sharedData.selectedTestImages = [] // Set the selectedImages value
+                    sharedData.selectedProductImages = [] // Set the selectedImages value
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
                     self?.navigationController?.pushViewController(nextVC, animated: true)
@@ -133,6 +136,7 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
         
         // Convert the images to data
         if productImageDatas.count == 0 || testImageDatas.count == 0 {
+            print(productImageDatas.count,testImageDatas.count)
             displayWarning("All images needed to be uploaded successfully. Please go back.")
             return
         }

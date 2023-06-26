@@ -12,15 +12,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var tokenRefreshTimer: Timer?
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "goLogIn" {
-//            if let presentedVC = segue.destination as? logInViewController {
-//                presentedVC.isModalInPresentation = true
-//            }
-//        }
-//    }
-    
-    
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Perform actions when the app is about to enter the foreground
         // Check if the user needs to re-login

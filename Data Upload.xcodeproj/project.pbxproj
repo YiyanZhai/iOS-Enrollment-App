@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		715E395AD7DEB19786A6358A /* libPods-iOS Barcode Upload App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF0BD04912809A90176AEC98 /* libPods-iOS Barcode Upload App.a */; };
 		A92C09B62A4808C9006FAC87 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92C09B52A4808C9006FAC87 /* ImageViewController.swift */; };
+		A92C09B82A49374B006FAC87 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92C09B72A49374B006FAC87 /* DataStore.swift */; };
 		A9A83F2F2A47A3D300C705D6 /* FinalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A83F2E2A47A3D300C705D6 /* FinalViewController.swift */; };
 		A9B915C02A3909AD008EF8AF /* Bridging-Header.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B915BF2A3909AD008EF8AF /* Bridging-Header.m */; };
 		A9C8BE592A442D87005B172F /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8BE582A442D87005B172F /* TestViewController.swift */; };
@@ -47,6 +48,7 @@
 		5A6613B94A65C133E2BC654A /* Pods-iOS Barcode Upload App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Barcode Upload App.debug.xcconfig"; path = "Target Support Files/Pods-iOS Barcode Upload App/Pods-iOS Barcode Upload App.debug.xcconfig"; sourceTree = "<group>"; };
 		5F1FEC1BB901F26671044E92 /* Pods-iOS Barcode Upload App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Barcode Upload App.release.xcconfig"; path = "Target Support Files/Pods-iOS Barcode Upload App/Pods-iOS Barcode Upload App.release.xcconfig"; sourceTree = "<group>"; };
 		A92C09B52A4808C9006FAC87 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		A92C09B72A49374B006FAC87 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		A9A83F2E2A47A3D300C705D6 /* FinalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalViewController.swift; sourceTree = "<group>"; };
 		A9B915BE2A3909AC008EF8AF /* iOS Barcode Upload App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Barcode Upload App-Bridging-Header.h"; sourceTree = "<group>"; };
 		A9B915BF2A3909AD008EF8AF /* Bridging-Header.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Bridging-Header.m"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				A9D2D6B92A1F225E00BEF8D5 /* logInViewController.swift */,
 				A92C09B52A4808C9006FAC87 /* ImageViewController.swift */,
 				A9A83F2E2A47A3D300C705D6 /* FinalViewController.swift */,
+				A92C09B72A49374B006FAC87 /* DataStore.swift */,
 				A9E1D60E2A11E39A0044FF22 /* SecondViewController.swift */,
 				A9C8BE582A442D87005B172F /* TestViewController.swift */,
 				A9CF00992A0E793000856F43 /* Main.storyboard */,
@@ -336,6 +339,7 @@
 				A9A83F2F2A47A3D300C705D6 /* FinalViewController.swift in Sources */,
 				A92C09B62A4808C9006FAC87 /* ImageViewController.swift in Sources */,
 				A9CF00982A0E793000856F43 /* ViewController.swift in Sources */,
+				A92C09B82A49374B006FAC87 /* DataStore.swift in Sources */,
 				A9C8BE592A442D87005B172F /* TestViewController.swift in Sources */,
 				A9CF00942A0E793000856F43 /* AppDelegate.swift in Sources */,
 				A9B915C02A3909AD008EF8AF /* Bridging-Header.m in Sources */,
