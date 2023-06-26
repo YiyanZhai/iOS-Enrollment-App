@@ -51,7 +51,7 @@
 		A9B915BE2A3909AC008EF8AF /* iOS Barcode Upload App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Barcode Upload App-Bridging-Header.h"; sourceTree = "<group>"; };
 		A9B915BF2A3909AD008EF8AF /* Bridging-Header.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Bridging-Header.m"; sourceTree = "<group>"; };
 		A9C8BE582A442D87005B172F /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
-		A9CF00902A0E793000856F43 /* iOS Barcode Upload App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Barcode Upload App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9CF00902A0E793000856F43 /* Data Upload.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Data Upload.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9CF00932A0E793000856F43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9CF00952A0E793000856F43 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A9CF00972A0E793000856F43 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -59,9 +59,9 @@
 		A9CF009C2A0E793300856F43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9CF009F2A0E793300856F43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A9CF00A12A0E793300856F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A9CF00A62A0E793400856F43 /* iOS Barcode Upload AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Barcode Upload AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9CF00A62A0E793400856F43 /* Data UploadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Data UploadTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9CF00AA2A0E793400856F43 /* iOS_Barcode_Upload_AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Barcode_Upload_AppTests.swift; sourceTree = "<group>"; };
-		A9CF00B02A0E793400856F43 /* iOS Barcode Upload AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Barcode Upload AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9CF00B02A0E793400856F43 /* Data UploadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Data UploadUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9CF00B42A0E793400856F43 /* iOS_Barcode_Upload_AppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Barcode_Upload_AppUITests.swift; sourceTree = "<group>"; };
 		A9CF00B62A0E793400856F43 /* iOS_Barcode_Upload_AppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Barcode_Upload_AppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		A9D2D6B72A1EECAC00BEF8D5 /* registerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerViewController.swift; sourceTree = "<group>"; };
@@ -128,9 +128,9 @@
 		A9CF00912A0E793000856F43 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A9CF00902A0E793000856F43 /* iOS Barcode Upload App.app */,
-				A9CF00A62A0E793400856F43 /* iOS Barcode Upload AppTests.xctest */,
-				A9CF00B02A0E793400856F43 /* iOS Barcode Upload AppUITests.xctest */,
+				A9CF00902A0E793000856F43 /* Data Upload.app */,
+				A9CF00A62A0E793400856F43 /* Data UploadTests.xctest */,
+				A9CF00B02A0E793400856F43 /* Data UploadUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -177,9 +177,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A9CF008F2A0E793000856F43 /* iOS Barcode Upload App */ = {
+		A9CF008F2A0E793000856F43 /* Data Upload */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A9CF00BA2A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload App" */;
+			buildConfigurationList = A9CF00BA2A0E793400856F43 /* Build configuration list for PBXNativeTarget "Data Upload" */;
 			buildPhases = (
 				5FF4D30F0546DE92805AF0D6 /* [CP] Check Pods Manifest.lock */,
 				A9CF008C2A0E793000856F43 /* Sources */,
@@ -190,14 +190,14 @@
 			);
 			dependencies = (
 			);
-			name = "iOS Barcode Upload App";
+			name = "Data Upload";
 			productName = "iOS Barcode Upload App";
-			productReference = A9CF00902A0E793000856F43 /* iOS Barcode Upload App.app */;
+			productReference = A9CF00902A0E793000856F43 /* Data Upload.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A9CF00A52A0E793400856F43 /* iOS Barcode Upload AppTests */ = {
+		A9CF00A52A0E793400856F43 /* Data UploadTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A9CF00BD2A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload AppTests" */;
+			buildConfigurationList = A9CF00BD2A0E793400856F43 /* Build configuration list for PBXNativeTarget "Data UploadTests" */;
 			buildPhases = (
 				A9CF00A22A0E793400856F43 /* Sources */,
 				A9CF00A32A0E793400856F43 /* Frameworks */,
@@ -208,14 +208,14 @@
 			dependencies = (
 				A9CF00A82A0E793400856F43 /* PBXTargetDependency */,
 			);
-			name = "iOS Barcode Upload AppTests";
+			name = "Data UploadTests";
 			productName = "iOS Barcode Upload AppTests";
-			productReference = A9CF00A62A0E793400856F43 /* iOS Barcode Upload AppTests.xctest */;
+			productReference = A9CF00A62A0E793400856F43 /* Data UploadTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A9CF00AF2A0E793400856F43 /* iOS Barcode Upload AppUITests */ = {
+		A9CF00AF2A0E793400856F43 /* Data UploadUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A9CF00C02A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload AppUITests" */;
+			buildConfigurationList = A9CF00C02A0E793400856F43 /* Build configuration list for PBXNativeTarget "Data UploadUITests" */;
 			buildPhases = (
 				A9CF00AC2A0E793400856F43 /* Sources */,
 				A9CF00AD2A0E793400856F43 /* Frameworks */,
@@ -226,9 +226,9 @@
 			dependencies = (
 				A9CF00B22A0E793400856F43 /* PBXTargetDependency */,
 			);
-			name = "iOS Barcode Upload AppUITests";
+			name = "Data UploadUITests";
 			productName = "iOS Barcode Upload AppUITests";
-			productReference = A9CF00B02A0E793400856F43 /* iOS Barcode Upload AppUITests.xctest */;
+			productReference = A9CF00B02A0E793400856F43 /* Data UploadUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -255,7 +255,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A9CF008B2A0E793000856F43 /* Build configuration list for PBXProject "iOS Barcode Upload App" */;
+			buildConfigurationList = A9CF008B2A0E793000856F43 /* Build configuration list for PBXProject "Data Upload" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -268,9 +268,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A9CF008F2A0E793000856F43 /* iOS Barcode Upload App */,
-				A9CF00A52A0E793400856F43 /* iOS Barcode Upload AppTests */,
-				A9CF00AF2A0E793400856F43 /* iOS Barcode Upload AppUITests */,
+				A9CF008F2A0E793000856F43 /* Data Upload */,
+				A9CF00A52A0E793400856F43 /* Data UploadTests */,
+				A9CF00AF2A0E793400856F43 /* Data UploadUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -367,12 +367,12 @@
 /* Begin PBXTargetDependency section */
 		A9CF00A82A0E793400856F43 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A9CF008F2A0E793000856F43 /* iOS Barcode Upload App */;
+			target = A9CF008F2A0E793000856F43 /* Data Upload */;
 			targetProxy = A9CF00A72A0E793400856F43 /* PBXContainerItemProxy */;
 		};
 		A9CF00B22A0E793400856F43 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A9CF008F2A0E793000856F43 /* iOS Barcode Upload App */;
+			target = A9CF008F2A0E793000856F43 /* Data Upload */;
 			targetProxy = A9CF00B12A0E793400856F43 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -591,7 +591,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iOS Barcode Upload App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iOS Barcode Upload App";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Data Upload.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Data Upload";
 			};
 			name = Debug;
 		};
@@ -610,7 +610,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iOS Barcode Upload App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iOS Barcode Upload App";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Data Upload.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Data Upload";
 			};
 			name = Release;
 		};
@@ -653,7 +653,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A9CF008B2A0E793000856F43 /* Build configuration list for PBXProject "iOS Barcode Upload App" */ = {
+		A9CF008B2A0E793000856F43 /* Build configuration list for PBXProject "Data Upload" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A9CF00B82A0E793400856F43 /* Debug */,
@@ -662,7 +662,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A9CF00BA2A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload App" */ = {
+		A9CF00BA2A0E793400856F43 /* Build configuration list for PBXNativeTarget "Data Upload" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A9CF00BB2A0E793400856F43 /* Debug */,
@@ -671,7 +671,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A9CF00BD2A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload AppTests" */ = {
+		A9CF00BD2A0E793400856F43 /* Build configuration list for PBXNativeTarget "Data UploadTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A9CF00BE2A0E793400856F43 /* Debug */,
@@ -680,7 +680,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A9CF00C02A0E793400856F43 /* Build configuration list for PBXNativeTarget "iOS Barcode Upload AppUITests" */ = {
+		A9CF00C02A0E793400856F43 /* Build configuration list for PBXNativeTarget "Data UploadUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A9CF00C12A0E793400856F43 /* Debug */,

@@ -97,12 +97,14 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
         let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
+        
         let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
             guard let self = self else { return }
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 imagePicker.sourceType = .camera
+                imagePicker.delegate = self
                 self.present(imagePicker, animated: true, completion: nil)
             } else {
                 let alert = UIAlertController(title: "Error", message: "Camera not available", preferredStyle: .alert)
@@ -110,7 +112,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 self.present(alert, animated: true, completion: nil)
             }
         }
-        
         
         let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
             guard let self = self else { return }
@@ -148,10 +149,9 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     }
     func updateScrollView() {
         scrollView.subviews.forEach { $0.removeFromSuperview() }
-
-        let scrollViewWidth: CGFloat = scrollView.bounds.width
+        
         let scrollViewHeight: CGFloat = scrollView.bounds.height
-        let spacing: CGFloat = 5.0 // Adjust the spacing here
+        let spacing: CGFloat = 15.0 // Adjust the spacing here
 
         var contentWidth: CGFloat = 0.0
 

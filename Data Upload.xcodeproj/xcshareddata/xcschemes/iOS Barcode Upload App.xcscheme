@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A9CF008F2A0E793000856F43"
-               BuildableName = "iOS Barcode Upload App.app"
-               BlueprintName = "iOS Barcode Upload App"
-               ReferencedContainer = "container:iOS Barcode Upload App.xcodeproj">
+               BuildableName = "Data Upload.app"
+               BlueprintName = "Data Upload"
+               ReferencedContainer = "container:Data Upload.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,9 +35,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A9CF00A52A0E793400856F43"
-               BuildableName = "iOS Barcode Upload AppTests.xctest"
-               BlueprintName = "iOS Barcode Upload AppTests"
-               ReferencedContainer = "container:iOS Barcode Upload App.xcodeproj">
+               BuildableName = "Data UploadTests.xctest"
+               BlueprintName = "Data UploadTests"
+               ReferencedContainer = "container:Data Upload.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -46,9 +46,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A9CF00AF2A0E793400856F43"
-               BuildableName = "iOS Barcode Upload AppUITests.xctest"
-               BlueprintName = "iOS Barcode Upload AppUITests"
-               ReferencedContainer = "container:iOS Barcode Upload App.xcodeproj">
+               BuildableName = "Data UploadUITests.xctest"
+               BlueprintName = "Data UploadUITests"
+               ReferencedContainer = "container:Data Upload.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -68,9 +68,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A9CF008F2A0E793000856F43"
-            BuildableName = "iOS Barcode Upload App.app"
-            BlueprintName = "iOS Barcode Upload App"
-            ReferencedContainer = "container:iOS Barcode Upload App.xcodeproj">
+            BuildableName = "Data Upload.app"
+            BlueprintName = "Data Upload"
+            ReferencedContainer = "container:Data Upload.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -85,9 +85,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A9CF008F2A0E793000856F43"
-            BuildableName = "iOS Barcode Upload App.app"
-            BlueprintName = "iOS Barcode Upload App"
-            ReferencedContainer = "container:iOS Barcode Upload App.xcodeproj">
+            BuildableName = "Data Upload.app"
+            BlueprintName = "Data Upload"
+            ReferencedContainer = "container:Data Upload.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

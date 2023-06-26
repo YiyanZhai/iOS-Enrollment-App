@@ -168,7 +168,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         scrollView.subviews.forEach { $0.removeFromSuperview() }
 
         let scrollViewHeight: CGFloat = scrollView.bounds.height
-        let spacing: CGFloat = 5.0 // Adjust the spacing here
+        let spacing: CGFloat = 15.0 // Adjust the spacing here
 
         var contentWidth: CGFloat = 0.0
 
