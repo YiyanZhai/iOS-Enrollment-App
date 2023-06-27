@@ -11,14 +11,6 @@ import Foundation
 
 class FinalViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goLogIn4" {
-            if let presentedVC = segue.destination as? logInViewController {
-                presentedVC.isModalInPresentation = true
-            }
-        }
-    }
-    
     var barcodeValue: String = ""
     var productImageDatas: [String] = []
     var barcodeImageData = ""
@@ -27,6 +19,30 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
     
     @IBOutlet weak var pic: UIImageView!
     @IBOutlet weak var UsernameTextBox: UITextField!
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goLogIn4" {
+            if let presentedVC = segue.destination as? logInViewController {
+                presentedVC.isModalInPresentation = true
+                presentedVC.onUpdateProfile = { [weak self] username, imageURL in
+                    // Update the UI in the FirstViewController with the new username and imageURL
+                    DispatchQueue.main.async {
+                        self?.UsernameTextBox.text = username
+                        if let imageURL = imageURL, let url = URL(string: imageURL) {
+                            DispatchQueue.global().async {
+                                if let data = try? Data(contentsOf: url) {
+                                    let image = UIImage(data: data)
+                                    DispatchQueue.main.async {
+                                        self?.pic.image = image
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         print(self.barcodeValue)
@@ -105,6 +121,12 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
     @IBAction func Submit(_ sender: Any) {
         uploadData(sender) { [weak self] success in
             if success {
+//                let sharedData = DataStore.shared
+//                sharedData.selectedTestImages = [] // Set the selectedImages value
+//                sharedData.selectedProductImages = [] // Set the selectedImages value
+//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
+//                self?.navigationController?.pushViewController(nextVC, animated: true)
                 self?.displaySuccess("Upload Succeeded.") { // Add completion handler
                     let sharedData = DataStore.shared
                     sharedData.selectedTestImages = [] // Set the selectedImages value

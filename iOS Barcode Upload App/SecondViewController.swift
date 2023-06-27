@@ -10,7 +10,7 @@ import PhotosUI
 import Foundation
 import AVFoundation
 
-class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AVCapturePhotoCaptureDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     private let maxPhotoCount = 40
     
     var hasUpload = false
@@ -26,6 +26,30 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     
     @IBOutlet weak var UsernameTextBox: UITextField!
     @IBOutlet weak var pic: UIImageView!
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goLogIn2" {
+            if let presentedVC = segue.destination as? logInViewController {
+                presentedVC.isModalInPresentation = true
+                presentedVC.onUpdateProfile = { [weak self] username, imageURL in
+                    // Update the UI in the FirstViewController with the new username and imageURL
+                    DispatchQueue.main.async {
+                        self?.UsernameTextBox.text = username
+                        if let imageURL = imageURL, let url = URL(string: imageURL) {
+                            DispatchQueue.global().async {
+                                if let data = try? Data(contentsOf: url) {
+                                    let image = UIImage(data: data)
+                                    DispatchQueue.main.async {
+                                        self?.pic.image = image
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     private var flagValue = 0
     
@@ -106,27 +130,29 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         self.performSegue(withIdentifier: "goLogIn2", sender: self)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goLogIn2" {
-            if let presentedVC = segue.destination as? logInViewController {
-                presentedVC.isModalInPresentation = true
-            }
-        }
-    }
-    
     @IBOutlet weak var flagButton: UIButton!
     
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
     
     @IBOutlet weak var product_upload_button: UIButton!
-    
     @IBOutlet weak var scrollView: UIScrollView!
     
     var selectedImages: [UIImage] = []
     
+    
+    var captureSession: AVCaptureSession?
+    var previewLayer: AVCaptureVideoPreviewLayer?
+    var capturedImages: [UIImage] = []
+    
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
         let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
+
+//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
+//            self.startCameraSession()
+//        }
+        
         let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
             guard let self = self else { return }
             let imagePicker = UIImagePickerController()
@@ -140,6 +166,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
                 self.present(alert, animated: true, completion: nil)
             }
         }
+        
         let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
             guard let self = self else { return }
             
@@ -153,6 +180,73 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
         actionSheet.addAction(libraryAction)
         present(actionSheet, animated: true, completion: nil)
     }
+    
+    func startCameraSession() {
+        // Check if the device has a camera
+        guard let device = AVCaptureDevice.default(for: .video) else {
+            let alert = UIAlertController(title: "Error", message: "Camera not available", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+
+        do {
+            // Create an input using the device
+            let input = try AVCaptureDeviceInput(device: device)
+
+            // Create a capture session
+            captureSession = AVCaptureSession()
+            captureSession?.addInput(input)
+
+            // Create a preview layer to display the camera feed
+            previewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
+            previewLayer?.videoGravity = .resizeAspectFill
+            previewLayer?.frame = view.bounds
+            view.layer.addSublayer(previewLayer!)
+
+            // Start the capture session
+            captureSession?.startRunning()
+        } catch {
+            print("Error setting up camera: \(error.localizedDescription)")
+        }
+    }
+    
+    @IBAction func takePhotoButtonTapped(_ sender: UIButton) {
+        guard let captureSession = captureSession else { return }
+
+        // Create a photo output
+        let photoOutput = AVCapturePhotoOutput()
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
+
+            // Configure the photo settings
+            let photoSettings = AVCapturePhotoSettings()
+            photoSettings.isHighResolutionPhotoEnabled = true
+
+            // Capture the photo
+            photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        }
+    }
+    
+    @IBAction func exitCaptureSession(_ sender: UIButton) {
+        // Perform necessary actions to exit the capture session
+        
+        // Append the captured images to the selected data
+        selectedImages += capturedImages
+        
+        // Update the scroll view with the new images
+        updateScrollView()
+        
+        // Reset the capturedImages array
+        capturedImages.removeAll()
+    }
+
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
+            // Add the captured image to the array
+            capturedImages.append(image)
+        }
+    }
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
@@ -164,7 +258,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
                             if self?.selectedImages.count ?? 0 < 40 {
                                 self?.selectedImages.append(image)
                                 self?.updateScrollView()
-//                                self?.updateImageViews()
                             }
                         }
                     }
@@ -239,23 +332,29 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, UI
     
     
     @IBAction func goToNextPage(_ sender: Any) {
-        self.uploadProductToServer()
-        
-        if (self.AuthToken == "" || productImageDatas.count != selectedImages.count || self.allSuccessful == false) {
-            displayWarning("All product Images needed to be uploaded successfully.")
+        if selectedImages.count == 0 {
+            displayWarning("Images are needed.")
             return
         }
-        
-        print("All product Images is uploaded successfully.")
+//        self.uploadProductToServer()
+//
+//        if (self.AuthToken == "" || productImageDatas.count != selectedImages.count || self.allSuccessful == false) {
+//            displayWarning("All product Images needed to be uploaded successfully.")
+//            return
+//        }
+//
+//        print("All product Images is uploaded successfully.")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let nextVC = storyboard.instantiateViewController(withIdentifier: "Test") as? TestViewController {
             // Pass the data to the test view controller
             nextVC.flagVal = self.flagValue
             nextVC.barcodeValue = self.barcodeValue
-            nextVC.AuthToken = self.AuthToken
-            nextVC.allSuccessful = self.allSuccessful
-            nextVC.barcodeImageData = self.barcodeImageData
-            nextVC.productImageDatas = self.productImageDatas
+            nextVC.barcodeImage = self.barcodeImage!
+            nextVC.productImages = self.selectedImages
+//            nextVC.AuthToken = self.AuthToken
+//            nextVC.allSuccessful = self.allSuccessful
+//            nextVC.barcodeImageData = self.barcodeImageData
+//            nextVC.productImageDatas = self.productImageDatas
 
             self.navigationController?.pushViewController(nextVC, animated: true)
         }

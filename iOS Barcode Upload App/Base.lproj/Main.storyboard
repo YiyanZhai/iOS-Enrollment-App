@@ -12,7 +12,7 @@
         <!--First-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="First" title="First" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="FirstViewController" customModule="Data_Upload" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="First" title="First" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="FirstViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -129,7 +129,7 @@
         <!--Second-->
         <scene sceneID="cko-al-V5d">
             <objects>
-                <viewController storyboardIdentifier="Second" title="Second" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Mev-16-2Bi" customClass="SecondViewController" customModule="Data_Upload" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Second" title="Second" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Mev-16-2Bi" customClass="SecondViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jA0-nW-Z2c">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -271,7 +271,7 @@
         <!--LogInOrSignUp-->
         <scene sceneID="Zg4-Ep-TvC">
             <objects>
-                <viewController title="LogInOrSignUp" id="FT2-zi-WE4" customClass="logInViewController" customModule="Data_Upload" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="LogInOrSignUp" id="FT2-zi-WE4" customClass="logInViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2JD-jR-A7U">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -347,7 +347,7 @@
         <!--SignUp-->
         <scene sceneID="4oY-Cn-a3H">
             <objects>
-                <viewController storyboardIdentifier="Registration" title="SignUp" id="Hxr-eh-TLm" customClass="registerViewController" customModule="Data_Upload" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Registration" title="SignUp" id="Hxr-eh-TLm" customClass="registerViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gCu-an-nGh">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -505,7 +505,7 @@
         <!--Test-->
         <scene sceneID="dhT-es-KBK">
             <objects>
-                <viewController storyboardIdentifier="Test" title="Test" interactionActivityTrackingBaseName="Test" useStoryboardIdentifierAsRestorationIdentifier="YES" id="min-XK-Aep" customClass="TestViewController" customModule="Data_Upload" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Test" title="Test" interactionActivityTrackingBaseName="Test" useStoryboardIdentifierAsRestorationIdentifier="YES" id="min-XK-Aep" customClass="TestViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Nfv-ws-2pP">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -653,7 +653,7 @@
         <!--Final-->
         <scene sceneID="oPk-QH-IpZ">
             <objects>
-                <viewController storyboardIdentifier="Final" title="Final" interactionActivityTrackingBaseName="Final" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zD8-Px-ef2" customClass="FinalViewController" customModule="Data_Upload" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Final" title="Final" interactionActivityTrackingBaseName="Final" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zD8-Px-ef2" customClass="FinalViewController" customModule="iOS_Barcode_Upload_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bNe-fE-lW5">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -684,25 +684,6 @@
                                         </buttonConfiguration>
                                         <connections>
                                             <action selector="Submit:" destination="zD8-Px-ef2" eventType="touchUpInside" id="qnL-is-C1h"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JPO-qp-Bzo">
-                                        <rect key="frame" x="149" y="740" width="92" height="42"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" image="arrowshape.backward.fill" catalog="system">
-                                            <attributedString key="attributedTitle">
-                                                <fragment content=" ">
-                                                    <attributes>
-                                                        <font key="NSFont" size="14" name="Arial-BoldMT"/>
-                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                    </attributes>
-                                                </fragment>
-                                            </attributedString>
-                                            <color key="baseBackgroundColor" systemColor="systemTealColor"/>
-                                        </buttonConfiguration>
-                                        <connections>
-                                            <action selector="goBack:" destination="zD8-Px-ef2" eventType="touchUpInside" id="ChN-hc-1Be"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d3B-L0-6Ga">

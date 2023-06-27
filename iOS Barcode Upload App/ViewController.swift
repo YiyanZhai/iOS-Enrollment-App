@@ -3,11 +3,9 @@
 //  iOS Barcode Upload App
 //
 //  Created by Yiyan Zhai on 5/12/23.
-//
 
 import UIKit
 import Vision
-
 
 class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate {
 
@@ -18,8 +16,24 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         if segue.identifier == "goLogIn" {
             if let presentedVC = segue.destination as? logInViewController {
                 presentedVC.isModalInPresentation = true
-                presentedVC.delegate = self
+                presentedVC.onUpdateProfile = { [weak self] username, imageURL in
+                    // Update the UI in the FirstViewController with the new username and imageURL
+                    DispatchQueue.main.async {
+                        self?.usernameTextBox.text = username
+                        if let imageURL = imageURL, let url = URL(string: imageURL) {
+                            DispatchQueue.global().async {
+                                if let data = try? Data(contentsOf: url) {
+                                    let image = UIImage(data: data)
+                                    DispatchQueue.main.async {
+                                        self?.pic.image = image
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
+            
         }
     }
     
@@ -29,6 +43,24 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         print("viewDidAppear: isLoggedIn? ",defaults.bool(forKey: "isLoggedIn"))
         if defaults.bool(forKey: "isLoggedIn") == false {
             self.performSegue(withIdentifier: "goLogIn", sender: self)
+        }
+        
+        print(defaults.string(forKey: "username") as Any)
+        if defaults.string(forKey: "username") != nil {
+            usernameTextBox.text = (defaults.string(forKey: "username") ?? "no user info")
+        } else {
+            self.performSegue(withIdentifier: "goLogIn", sender: self)
+        }
+        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+        let profile_image_url = defaults.string(forKey: "profile_image_url")
+        let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+        let imageURL = URL(string: p)
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: imageURL!) {
+                DispatchQueue.main.async {
+                    self.pic.image = UIImage(data: data)
+                }
+            }
         }
         
         // Add a tap gesture recognizer to the usernameTextBox
@@ -42,6 +74,7 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
         let defaults = UserDefaults.standard
         defaults.set("", forKey: "access")
+        defaults.set("no user info", forKey: "username")
         defaults.set(false, forKey: "isLoggedIn")
         self.performSegue(withIdentifier: "goLogIn", sender: self)
     }
@@ -62,25 +95,6 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         navigationController?.setNavigationBarHidden(true, animated: false)
         self.textbox.delegate = self
         self.navigationController?.navigationBar.isHidden=true
-        
-        let defaults = UserDefaults.standard
-        print(defaults.string(forKey: "username") as Any)
-        if defaults.string(forKey: "username") != nil {
-            usernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
-        } else {
-            self.performSegue(withIdentifier: "goLogIn", sender: self)
-        }
-        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
-        let profile_image_url = defaults.string(forKey: "profile_image_url")
-        var p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
-        let imageURL = URL(string: p)
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: imageURL!) {
-                DispatchQueue.main.async {
-                    self.pic.image = UIImage(data: data)
-                }
-            }
-        }
         
         // Add a tap gesture recognizer to dismiss the keyboard when tapping outside the text field
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -193,12 +207,13 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.isBarcodeUploaded = true // Set isBarcodeUploaded to true when the image is uploaded
         
         if let barcodeValue = decodeBarcode(from: image) {
-            if let number = Int(barcodeValue) {
-                self.textbox.text = "\(number)" // Display only numeric value
-            } else {
-                self.textbox.text = "" // Clear text box if barcode is not a number
-                showWarningAlert("Invalid Barcode", message: "The scanned barcode is not a number.")
-            }
+            self.textbox.text = barcodeValue
+//            if let number = Int(barcodeValue) {
+//                self.textbox.text = "\(number)" // Display only numeric value
+//            } else {
+//                self.textbox.text = "" // Clear text box if barcode is not a number
+//                showWarningAlert("Invalid Barcode", message: "The scanned barcode is not a number.")
+//            }
         } else {
             self.textbox.text = "" // Clear text box if barcode cannot be decoded
             showWarningAlert("Barcode Decoding Failed", message: "Unable to decode barcode from the image.")
@@ -237,12 +252,4 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
         present(alert, animated: true, completion: nil)
     }
 
-}
-
-
-extension FirstViewController: LogInViewControllerDelegate {
-    func setUsernameText(_ username: String) {
-        print("LogInViewControllerDelegate setting")
-        self.usernameTextBox.text = username
-    }
 }

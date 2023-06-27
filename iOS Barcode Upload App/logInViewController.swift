@@ -7,12 +7,7 @@
 
 import UIKit
 
-protocol LogInViewControllerDelegate: AnyObject {
-    func setUsernameText(_ username: String)
-}
-
 class logInViewController: UIViewController {
-    weak var delegate: LogInViewControllerDelegate?
 
     @IBOutlet weak var email_text: UITextField!
     @IBOutlet weak var password_text: UITextField!
@@ -23,6 +18,7 @@ class logInViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    var onUpdateProfile: ((String, String?) -> Void)?
     
     @IBAction func logInTapped(_ sender: Any) {
         guard let username = self.email_text.text, !username.isEmpty,
@@ -75,13 +71,16 @@ class logInViewController: UIViewController {
                            let user_id = responseJSON["user_id"] as? Int {
                             let defaults = UserDefaults.standard
                             defaults.set(username, forKey: "username")
+                            var imageURL = "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
                             if let user_profile_url = responseJSON["user_profile_url"] as? String {
                                 print("User Profile URL: \(user_profile_url)")
+                                imageURL = user_profile_url
                                 defaults.set(user_profile_url, forKey: "user_profile_url")
                             } else {
                                 let defaultUrl = "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
                                 defaults.set(defaultUrl, forKey: "user_profile_url")
                             }
+                            self.onUpdateProfile?(username, imageURL)
                             defaults.set(user_id, forKey: "user_id")
                             // Handle the user information
                             print("Username: \(username)")

@@ -11,13 +11,7 @@ import Foundation
 
 class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goLogIn3" {
-            if let presentedVC = segue.destination as? logInViewController {
-                presentedVC.isModalInPresentation = true
-            }
-        }
-    }
+
     var selectedImages: [UIImage] = []
     
     var barcodeValue: String = ""
@@ -28,10 +22,35 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     var flagVal = 0
     var testImageDatas: [String] = []
     var hasUpload = false
+    var barcodeImage: UIImage? = nil
+    var productImages: [UIImage] = []
     
     @IBOutlet weak var pic: UIImageView!
-    
     @IBOutlet weak var UsernameTextBox: UITextField!
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goLogIn3" {
+            if let presentedVC = segue.destination as? logInViewController {
+                presentedVC.isModalInPresentation = true
+                presentedVC.onUpdateProfile = { [weak self] username, imageURL in
+                    // Update the UI in the FirstViewController with the new username and imageURL
+                    DispatchQueue.main.async {
+                        self?.UsernameTextBox.text = username
+                        if let imageURL = imageURL, let url = URL(string: imageURL) {
+                            DispatchQueue.global().async {
+                                if let data = try? Data(contentsOf: url) {
+                                    let image = UIImage(data: data)
+                                    DispatchQueue.main.async {
+                                        self?.pic.image = image
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         print("viewDidAppear")
@@ -231,9 +250,17 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
 
     
     @IBAction func goToNextPage(_ sender: Any) {
+        if selectedImages.count == 0 {
+            displayWarning("Images are needed.")
+            return
+        }
+        
+        self.uploadProductToServer()
         self.uploadTestToServer()
+        
+        print(testImageDatas.count, selectedImages.count,productImageDatas.count, productImages.count)
 
-        if self.AuthToken == "" || testImageDatas.count != selectedImages.count || self.allSuccessful == false {
+        if self.AuthToken == "" || testImageDatas.count != selectedImages.count || self.allSuccessful == false || productImageDatas.count != productImages.count {
             displayWarning("All product Images needed to be uploaded successfully.")
             return
         }
@@ -250,6 +277,80 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         }
     }
     
+    func uploadProductToServer() {
+//        if hasUpload != false {
+//            self.displayWarning("You already successfully uploaded the image(s).")
+//            return
+//        }
+//        if selectedImages.count == 0 {
+//            self.displayWarning("Please upload product image(s).")
+//            return
+//        }
+        getAuthToken { authToken in
+            if authToken != nil {
+                // Authentication token successfully obtained
+                self.AuthToken = authToken ?? "no authToken"
+                print("Auth token: \(self.AuthToken)")
+                // Use the token for your desired operations
+            } else {
+                // Error occurred while obtaining the authentication token
+                self.displayWarning("Failed to obtain auth token")
+                // Handle the error condition
+            }
+        }
+//        sleep(2)
+        self.allSuccessful = true
+        
+        print("start uploading barcode images to server")
+        
+        let option = "barcode"
+        let image_Name_barcode = getName(option: option)
+        
+        guard let barcodeImageData = barcodeImage?.jpegData(compressionQuality: 1.0) else {
+            self.displayWarning("Failed to convert barcode image to data")
+            self.allSuccessful = false
+            return
+        }
+
+        self.uploadImageToAzureStorage(imageData: barcodeImageData, imageName: image_Name_barcode, auth: self.AuthToken, option: "barcode-captures")  { success in
+            if success {
+                print("Barcode Image upload task succeeded")
+            } else {
+                self.displayWarning("Barcode Image upload task failed")
+                return
+            }
+        }
+        
+        print("start uploading product images to server")
+        
+        self.productImageDatas = []
+        for image in productImages {
+            guard let image_Data = image.jpegData(compressionQuality: 1.0) else {
+                displayWarning("Failed to convert product image to data")
+                return
+            }
+            let image_Name = getName(option: "product")
+            
+            uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "product-captures")  { success in
+                if success {
+                    print("Image upload task succeeded")
+                } else {
+                    self.allSuccessful = false
+                    print("Image upload task failed")
+                }
+            }
+            if self.allSuccessful == false {
+                self.displayWarning("Failed to upload all product images to storage.")
+                return
+            }
+        }
+        
+        if allSuccessful == true {
+//            self.displaySuccess("Upload succeed, thank you.")
+            hasUpload = true
+        }
+
+    }
     
     func displayWarning(_ message: String) {
         DispatchQueue.main.async {
@@ -285,7 +386,13 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         
         let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
         print(urlstring)
-        testImageDatas.append(urlstring)
+        if container == "test-captures" {
+            testImageDatas.append(urlstring)
+        } else if container == "barcode-captures" {
+            barcodeImageData = urlstring
+        } else {
+            productImageDatas.append(urlstring)
+        }
         
         guard let url = URL(string: urlstring) else {
             print("Invalid URL")
@@ -325,10 +432,10 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     }
     
     func uploadTestToServer() {
-        if hasUpload != false {
-            self.displayWarning("Images already uploaded.")
-            return
-        }
+//        if hasUpload != false {
+//            self.displayWarning("Images already uploaded.")
+//            return
+//        }
         if selectedImages.count == 0 {
             self.displayWarning("Please upload test image(s).")
             return
@@ -345,6 +452,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                     // Error occurred while obtaining the authentication token
                     self.displayWarning("Failed to obtain auth token")
                     // Handle the error condition
+                    return
                 }
             }
         } else {
@@ -355,7 +463,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         self.testImageDatas = []
         self.allSuccessful = true
         for image in selectedImages {
-            guard let image_Data = image.jpegData(compressionQuality: 0.8) else {
+            guard let image_Data = image.jpegData(compressionQuality: 1.0) else {
                 displayWarning("Failed to convert image to data")
                 return
             }
@@ -381,13 +489,26 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     }
     
     func getName(option: String) -> String {
-        let username = (UserDefaults.standard.string(forKey: "user_id"))!
+        let username = UserDefaults.standard.string(forKey: "user_id") ?? ""
         let upc = barcodeValue
         let uuid = UUID().uuidString
-        let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM_dd_HH_mm"
+        let currentDate = dateFormatter.string(from: Date())
+        
+        let imageName = "\(username)-\(option)-\(currentDate)-\(upc)-\(uuid).jpg"
         
         return imageName
     }
+//    func getName(option: String) -> String {
+//        let username = (UserDefaults.standard.string(forKey: "user_id"))!
+//        let upc = barcodeValue
+//        let uuid = UUID().uuidString
+//        let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"
+//
+//        return imageName
+//    }
 
     func getAuthToken(completion: @escaping (String?) -> Void) {
         let urlString = "https://login.microsoftonline.com/6dfefb37-6886-4e5e-b19e-643474ed010b/oauth2/token"

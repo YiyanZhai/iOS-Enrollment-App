@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/yiyan/Downloads/iOS Barcode Upload App/Data Upload.xcodeproj">
+      location = "group:Pods/Pods.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
+      location = "group:iOS Barcode Upload App.xcodeproj">
    </FileRef>
 </Workspace>
