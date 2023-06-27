@@ -3,7 +3,11 @@
 //  iOS Barcode Upload App
 //
 //  Created by Yiyan Zhai on 6/22/23.
+<<<<<<< HEAD
 // code for av foundation......
+=======
+// code for av foundation
+>>>>>>> d1b263ba566599a00881e2c5497038c97638d792
 
 import UIKit
 //import PhotosUI
