@@ -11,9 +11,11 @@ import Foundation
 import AVFoundation
 
 class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AVCapturePhotoCaptureDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    private let maxPhotoCount = 40
+    private let maxPhotoCount = 100
     
     var hasUpload = false
+    var barcodeMetadata = ""
+    var productMetadata: [String] = []
     
     // from FirstViewController
     var barcodeValue: String = ""
@@ -54,11 +56,12 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
     private var flagValue = 0
     
     override func viewDidLoad() {
-        print("viewDidLoad second")
+//        print("viewDidLoad second")
         super.viewDidLoad()
         
         let sharedData = DataStore.shared
         self.selectedImages = sharedData.selectedProductImages
+        self.productMetadata = sharedData.productMetadata
         self.updateScrollView()
 //        self.hasUpload = sharedData.hasUploadProduct
 //        if self.selectedImages.count != 0 {
@@ -74,11 +77,11 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         // Hide the delete buttons initially
         
         let defaults = UserDefaults.standard
-        print("username",defaults.string(forKey: "username") as Any)
+//        print("username",defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != Optional("none") {
             UsernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
         }
-        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+//        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
         let profile_image_url = defaults.string(forKey: "profile_image_url")
         let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
         let imageURL = URL(string: p)
@@ -92,7 +95,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("viewDidAppear second")
+//        print("viewDidAppear second")
         let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
         UsernameTextBox.addGestureRecognizer(tapGesture1)
         UsernameTextBox.isUserInteractionEnabled = true
@@ -250,12 +253,32 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
+        
+//        let requestOptions = PHImageRequestOptions()
+//        requestOptions.isSynchronous = true
+//        for result in results {
+//            if let assetIdentifier = result.assetIdentifier {
+//                PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil).enumerateObjects { (phAsset, _, _) in
+//                    PHImageManager.default().requestImageData(for: phAsset, options: requestOptions) { (data, _, _, info) in
+//                        if let metadata = info?[kCGImagePropertyExifDictionary as String] as? NSDictionary {
+//                            print("Metadata got!")
+//                            let metadataString = metadata.description
+//                            print("Metadata: \(metadataString)")
+//                            self.productMetadata.append(metadataString)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        print(self.productMetadata.count)
+
         for result in results {
             if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
                 result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
                     if let image = image as? UIImage {
                         DispatchQueue.main.async {
-                            if self?.selectedImages.count ?? 0 < 40 {
+                            if self?.selectedImages.count ?? 0 < 100 {
+                                self?.productMetadata.append("placeholder")
                                 self?.selectedImages.append(image)
                                 self?.updateScrollView()
                             }
@@ -264,6 +287,8 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
                 }
             }
         }
+        print(self.productMetadata.count)
+        print(self.selectedImages.count)
     }
     
     func updateScrollView() {
@@ -310,10 +335,20 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
 
     @objc func deleteButtonTapped(_ sender: UIButton) {
         let index = sender.tag
-        // Remove the image from the selectedImages array
         selectedImages.remove(at: index)
-        // Update the scroll view
+        productMetadata.remove(at: index)
         updateScrollView()
+    }
+    
+    func convertDictionaryToString(_ dictionary: [String: Any]) -> String? {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonString
+        } catch {
+            print("Error converting dictionary to string: \(error.localizedDescription)")
+            return nil
+        }
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -321,6 +356,21 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             dismiss(animated: true, completion: nil)
             return
         }
+        
+        if let metadata = info[UIImagePickerController.InfoKey.mediaMetadata] as? NSDictionary {
+//            if let metadata0 = metadata.value(forKey: "{Exif}") {
+//                let metadataStr = (metadata0 as! NSDictionary).description
+//                print("Exif Metadata: \(metadataStr)")
+//            }
+            self.productMetadata.append(metadata.description)
+            print("Product meta: ",type(of: metadata.description))
+            print("Product Meta: ")
+            print(metadata.description)
+        } else {
+            self.productMetadata.append("placeholder")
+            print("No metadata extracted.")
+        }
+        print(self.productMetadata.count)
         
         if selectedImages.count < self.maxPhotoCount {
             selectedImages.append(image)
@@ -336,14 +386,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             displayWarning("Images are needed.")
             return
         }
-//        self.uploadProductToServer()
-//
-//        if (self.AuthToken == "" || productImageDatas.count != selectedImages.count || self.allSuccessful == false) {
-//            displayWarning("All product Images needed to be uploaded successfully.")
-//            return
-//        }
-//
-//        print("All product Images is uploaded successfully.")
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let nextVC = storyboard.instantiateViewController(withIdentifier: "Test") as? TestViewController {
             // Pass the data to the test view controller
@@ -351,10 +394,9 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             nextVC.barcodeValue = self.barcodeValue
             nextVC.barcodeImage = self.barcodeImage!
             nextVC.productImages = self.selectedImages
-//            nextVC.AuthToken = self.AuthToken
-//            nextVC.allSuccessful = self.allSuccessful
-//            nextVC.barcodeImageData = self.barcodeImageData
-//            nextVC.productImageDatas = self.productImageDatas
+            
+            nextVC.barcodeMetadata = self.barcodeMetadata
+            nextVC.productMetadata = self.productMetadata
 
             self.navigationController?.pushViewController(nextVC, animated: true)
         }
@@ -364,9 +406,8 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         let sharedData = DataStore.shared
         sharedData.selectedProductImages = self.selectedImages // Set the selectedImages value
         sharedData.flagValue = self.flagValue
-//        sharedData.hasUploadProduct = self.hasUpload // Set the hasUpload value
-//        sharedData.AuthToken = self.AuthToken
-//        sharedData.allSuccessful = self.allSuccessful
+        sharedData.productMetadata = self.productMetadata
+
         self.navigationController?.popViewController(animated: true)
     }
     

@@ -527,6 +527,7 @@
 				DEVELOPMENT_TEAM = J9X3LA3V65;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS Barcode Upload App/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Image Upload";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -560,6 +561,7 @@
 				DEVELOPMENT_TEAM = J9X3LA3V65;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS Barcode Upload App/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Image Upload";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

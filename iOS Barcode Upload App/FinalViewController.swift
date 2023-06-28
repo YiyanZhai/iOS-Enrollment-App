@@ -15,6 +15,9 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
     var barcodeImageData = ""
     var flagVal = 0
     var testImageDatas: [String] = []
+    var testMetadata: [String] = []
+    var productMetadata: [String] = []
+//    var barcodeMetadata = ""
     
     @IBOutlet weak var pic: UIImageView!
     @IBOutlet weak var UsernameTextBox: UITextField!
@@ -44,8 +47,6 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print(self.barcodeValue)
-        print("viewDidAppear")
         let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
         UsernameTextBox.addGestureRecognizer(tapGesture1)
         UsernameTextBox.isUserInteractionEnabled = true
@@ -77,13 +78,12 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         let defaults = UserDefaults.standard
-        print("username",defaults.string(forKey: "username") as Any)
+//        print("username",defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != Optional("none") {
             UsernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
         }
-        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+//        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
         let profile_image_url = defaults.string(forKey: "profile_image_url")
         let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
         let imageURL = URL(string: p)
@@ -120,12 +120,6 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
     @IBAction func Submit(_ sender: Any) {
         uploadData(sender) { [weak self] success in
             if success {
-//                let sharedData = DataStore.shared
-//                sharedData.selectedTestImages = [] // Set the selectedImages value
-//                sharedData.selectedProductImages = [] // Set the selectedImages value
-//                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//                let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
-//                self?.navigationController?.pushViewController(nextVC, animated: true)
                 self?.displaySuccess("Upload Succeeded.") { // Add completion handler
                     let sharedData = DataStore.shared
                     sharedData.selectedTestImages = [] // Set the selectedImages value
@@ -162,9 +156,9 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
             return
         }
         
-        print("testImageDatas count:", testImageDatas.count)
-        print("productImageDatas count:",productImageDatas.count)
-        print(flagVal)
+        print("testImageDatas count:", testImageDatas.count, self.testMetadata.count)
+        print("productImageDatas count:",productImageDatas.count, self.productMetadata.count)
+        print("Barcode Value to be uploaded:",barcodeValue)
         
         // Create the request body
         let requestBody: [String: Any] = [
@@ -172,7 +166,9 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
             "processed_barcode": barcodeValue,
             "product_images_urls": productImageDatas,
             "test_images_urls": testImageDatas,
-            "flag": flagVal
+            "flag": flagVal,
+            "product_images_meta": self.productMetadata,
+            "test_images_meta": self.testMetadata
         ]
         
         // Convert the request body to JSON data
@@ -193,7 +189,6 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
         request.httpBody = jsonData
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let accesstoken_ = UserDefaults.standard.string(forKey: "access")!
-//        print(accesstoken_)
         request.setValue("Bearer \(String(describing: accesstoken_))", forHTTPHeaderField: "Authorization")
         
         // Create a URLSession task for the request

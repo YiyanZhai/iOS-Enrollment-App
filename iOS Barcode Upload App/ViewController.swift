@@ -6,11 +6,13 @@
 
 import UIKit
 import Vision
+import Photos
 
 class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UITextFieldDelegate, UINavigationControllerDelegate {
 
     var userEmail: String = ""
     var userPassword: String = ""
+    var metadataString = ""
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goLogIn" {
@@ -36,22 +38,21 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
             
         }
     }
-    
+    var imageurl : URL? = nil
     override func viewDidAppear(_ animated: Bool) {
-        print("viewDidAppear on first")
+//        print("viewDidAppear on first")
         let defaults = UserDefaults.standard
-        print("viewDidAppear: isLoggedIn? ",defaults.bool(forKey: "isLoggedIn"))
+//        print("viewDidAppear: isLoggedIn? ",defaults.bool(forKey: "isLoggedIn"))
         if defaults.bool(forKey: "isLoggedIn") == false {
             self.performSegue(withIdentifier: "goLogIn", sender: self)
         }
-        
-        print(defaults.string(forKey: "username") as Any)
+//        print(defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != nil {
             usernameTextBox.text = (defaults.string(forKey: "username") ?? "no user info")
         } else {
             self.performSegue(withIdentifier: "goLogIn", sender: self)
         }
-        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
+//        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
         let profile_image_url = defaults.string(forKey: "profile_image_url")
         let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
         let imageURL = URL(string: p)
@@ -90,7 +91,7 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBOutlet weak var usernameTextBox: UITextField!
     
     override func viewDidLoad() {
-        print("viewDidLoad on first")
+//        print("viewDidLoad on first")
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: false)
         self.textbox.delegate = self
@@ -145,6 +146,7 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
             // Pass the data to the second view controller
             nextVC.barcodeValue = barcodeValue
             nextVC.barcodeImage = barcodeImage
+            nextVC.barcodeMetadata = self.metadataString
             self.navigationController?.pushViewController(nextVC, animated: true)
         }
     }
@@ -197,23 +199,25 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let metadata = info[UIImagePickerController.InfoKey.mediaMetadata] as? NSDictionary {
+            print("Got Metadata!")
+            self.metadataString = metadata.description
+        } else {
+            self.metadataString = "placeholder"
+            print("No metadata extracted.")
+        }
+        
         guard let image = info[.originalImage] as? UIImage else {
             dismiss(animated: true, completion: nil)
             return
         }
-
         self.imageView.image = image
         self.dismiss(animated: true, completion: nil)
         self.isBarcodeUploaded = true // Set isBarcodeUploaded to true when the image is uploaded
-        
+
         if let barcodeValue = decodeBarcode(from: image) {
             self.textbox.text = barcodeValue
-//            if let number = Int(barcodeValue) {
-//                self.textbox.text = "\(number)" // Display only numeric value
-//            } else {
-//                self.textbox.text = "" // Clear text box if barcode is not a number
-//                showWarningAlert("Invalid Barcode", message: "The scanned barcode is not a number.")
-//            }
         } else {
             self.textbox.text = "" // Clear text box if barcode cannot be decoded
             showWarningAlert("Barcode Decoding Failed", message: "Unable to decode barcode from the image.")
