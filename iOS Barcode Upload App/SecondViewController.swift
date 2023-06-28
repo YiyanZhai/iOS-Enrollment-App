@@ -358,19 +358,22 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             var current = ""
             for (key, value) in metadata {
                 var thisMetadata = ""
-                print(key, type(of: value))
-                if let metadata0 = metadata.value(forKey: key as! String) as? NSDictionary {
-                    for (key1, value1) in metadata0 {
+//                print(key, type(of: value))
+                if let v = metadata.value(forKey: key as! String) as? NSDictionary {
+                    for (key1, value1) in v {
                         let newline = "\"\(key1)\":\"\(value1)\","
                         thisMetadata += newline
                     }
-                } else {
-                    print(key, ": not available")
+                    thisMetadata = String(thisMetadata.dropLast())
+                } else if let number = metadata.value(forKey: key as! String) as? NSNumber {
+                    thisMetadata = number.stringValue
+                }  else if let data = metadata.value(forKey: key as! String) as? NSData {
+                    thisMetadata = String(data: data as Data, encoding: .utf8) ?? ""
                 }
-                print(thisMetadata)
-                current += "\"\(key)\":\"\(String(thisMetadata.dropLast()))\","
+//                print(thisMetadata)
+                current += "\"\(key)\":\"\(thisMetadata)\","
             }
-            print("Result: ",String(current.dropLast()))
+            print("New Metadata Element: ",String(current.dropLast()))
             self.productMetadata.append(String(current.dropLast()))
 //            let metadata0 = metadata.value(forKey: "{Exif}") as! NSDictionary
 //            var thisMetadata = ""

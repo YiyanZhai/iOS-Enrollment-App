@@ -232,15 +232,21 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             var current = ""
             for (key, value) in metadata {
                 var thisMetadata = ""
-                print(type(of: value))
-                if let metadata0 = metadata.value(forKey: key as! String) as? NSDictionary {
-                    for (key1, value1) in metadata0 {
+                print(key, type(of: value))
+                if let v = metadata.value(forKey: key as! String) as? NSDictionary {
+                    for (key1, value1) in v {
                         let newline = "\"\(key1)\":\"\(value1)\","
                         thisMetadata += newline
                     }
+                    thisMetadata = String(thisMetadata.dropLast())
+                } else if let number = metadata.value(forKey: key as! String) as? NSNumber {
+                    thisMetadata = number.stringValue
+                }  else if let data = metadata.value(forKey: key as! String) as? NSData {
+                    thisMetadata = String(data: data as Data, encoding: .utf8) ?? ""
+                    print(data)
                 }
                 print(thisMetadata)
-                current += "\"\(key)\":\"\(String(thisMetadata.dropLast()))\","
+                current += "\"\(key)\":\"\(thisMetadata)\","
             }
             self.testMetadata.append(String(current.dropLast()))
         } else {

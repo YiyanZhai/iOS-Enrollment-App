@@ -156,10 +156,10 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
             return
         }
         
-        print(self.testMetadata,self.productMetadata)
-        print("testImageDatas count:", testImageDatas.count, self.testMetadata.count)
-        print("productImageDatas count:",productImageDatas.count, self.productMetadata.count)
-        print("Barcode Value to be uploaded:",barcodeValue)
+//        print(self.testMetadata,self.productMetadata)
+//        print("testImageDatas count:", testImageDatas.count, self.testMetadata.count)
+//        print("productImageDatas count:",productImageDatas.count, self.productMetadata.count)
+//        print("Barcode Value to be uploaded:",barcodeValue)
         
         // Create the request body
         let requestBody: [String: Any] = [
