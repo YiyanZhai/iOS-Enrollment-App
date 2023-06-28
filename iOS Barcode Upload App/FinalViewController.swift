@@ -156,6 +156,7 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
             return
         }
         
+        print(self.testMetadata,self.productMetadata)
         print("testImageDatas count:", testImageDatas.count, self.testMetadata.count)
         print("productImageDatas count:",productImageDatas.count, self.productMetadata.count)
         print("Barcode Value to be uploaded:",barcodeValue)
@@ -170,6 +171,16 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
             "product_images_meta": self.productMetadata,
             "test_images_meta": self.testMetadata
         ]
+        
+//        let requestBody: [String: Any] = [
+//            "barcode_image_url": barcodeImageData,
+//            "processed_barcode": barcodeValue,
+//            "product_images_urls": productImageDatas,
+//            "test_images_urls": testImageDatas,
+//            "flag": flagVal,
+//            "product_images_meta": [],
+//            "test_images_meta": []
+//        ]
         
         // Convert the request body to JSON data
         guard let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {

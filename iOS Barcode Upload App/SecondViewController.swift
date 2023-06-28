@@ -340,17 +340,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         updateScrollView()
     }
     
-    func convertDictionaryToString(_ dictionary: [String: Any]) -> String? {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
-            let jsonString = String(data: jsonData, encoding: .utf8)
-            return jsonString
-        } catch {
-            print("Error converting dictionary to string: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else {
             dismiss(animated: true, completion: nil)
@@ -358,14 +347,49 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         }
         
         if let metadata = info[UIImagePickerController.InfoKey.mediaMetadata] as? NSDictionary {
+//            do {
+//                let jsonData = try JSONSerialization.data(withJSONObject: metadata, options: .prettyPrinted)
+//                let jsonString = String(data: jsonData, encoding: .utf8)
+//                print("JSON string: \(jsonString ?? "")")
+//            } catch {
+//                print("Error serializing metadata to JSON: \(error)")
+//            }
+
+            var current = ""
+            for (key, value) in metadata {
+                var thisMetadata = ""
+                print(key, type(of: value))
+                if let metadata0 = metadata.value(forKey: key as! String) as? NSDictionary {
+                    for (key1, value1) in metadata0 {
+                        let newline = "\"\(key1)\":\"\(value1)\","
+                        thisMetadata += newline
+                    }
+                } else {
+                    print(key, ": not available")
+                }
+                print(thisMetadata)
+                current += "\"\(key)\":\"\(String(thisMetadata.dropLast()))\","
+            }
+            print("Result: ",String(current.dropLast()))
+            self.productMetadata.append(String(current.dropLast()))
+//            let metadata0 = metadata.value(forKey: "{Exif}") as! NSDictionary
+//            var thisMetadata = ""
+//            for (key, value) in metadata0 {
+//                let newline = "\"\(key)\":\"\(value)\","
+//                thisMetadata += newline
+//                print(newline, type(of: value))
+//            }
+//            print(thisMetadata)
+//            self.productMetadata.append(String(thisMetadata.dropLast()))
 //            if let metadata0 = metadata.value(forKey: "{Exif}") {
 //                let metadataStr = (metadata0 as! NSDictionary).description
 //                print("Exif Metadata: \(metadataStr)")
 //            }
-            self.productMetadata.append(metadata.description)
-            print("Product meta: ",type(of: metadata.description))
-            print("Product Meta: ")
-            print(metadata.description)
+//            self.productMetadata.append(metadata.description)
+//            print("Product meta: ",type(of: metadata))
+//            print("Product Meta: ")
+//            print(metadata.description)
+            print(productMetadata.count)
         } else {
             self.productMetadata.append("placeholder")
             print("No metadata extracted.")

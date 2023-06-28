@@ -229,15 +229,20 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         }
         
         if let metadata = info[UIImagePickerController.InfoKey.mediaMetadata] as? NSDictionary {
-//            let metadataStr = ""
-//            if let metadata0 = metadata.value(forKey: "{Exif}") {
-//                let metadataStr = (metadata0 as! NSDictionary).description
-//                print("Test Exif Metadata: \(metadataStr)")
-//            }
-//            self.testMetadata.append(metadataStr)
-            print("TEST meta: ",type(of: metadata.description))
-            self.testMetadata.append(metadata.description)
-            
+            var current = ""
+            for (key, value) in metadata {
+                var thisMetadata = ""
+                print(type(of: value))
+                if let metadata0 = metadata.value(forKey: key as! String) as? NSDictionary {
+                    for (key1, value1) in metadata0 {
+                        let newline = "\"\(key1)\":\"\(value1)\","
+                        thisMetadata += newline
+                    }
+                }
+                print(thisMetadata)
+                current += "\"\(key)\":\"\(String(thisMetadata.dropLast()))\","
+            }
+            self.testMetadata.append(String(current.dropLast()))
         } else {
             self.testMetadata.append("placeholder")
             print("No metadata extracted.")
@@ -399,7 +404,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         }
         
         if allSuccessful == true {
-            self.displaySuccess("Upload succeed, thank you.")
+//            self.displaySuccess("Upload succeed, thank you.")
 //            self.hasUpload = true
             completion(true)
         } else {
@@ -422,6 +427,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
     func getCurrentDateTime() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -482,12 +488,12 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         task.resume()
     }
     
-    func uploadTestToServer() {
-//        if hasUpload != false {
-//            self.displayWarning("Images already uploaded.")
-//            return
-//        }
-    }
+//    func uploadTestToServer() {
+////        if hasUpload != false {
+////            self.displayWarning("Images already uploaded.")
+////            return
+////        }
+//    }
     
     func getName(option: String) -> String {
         let username = UserDefaults.standard.string(forKey: "user_id") ?? ""
