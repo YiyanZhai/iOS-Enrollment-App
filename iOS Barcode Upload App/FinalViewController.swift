@@ -140,7 +140,7 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
                 }
             } else {
                 // Handle upload failure
-                self?.displayWarning("Upload to server failed")
+                self?.displayWarning("Upload to server failed. Try to log out and log back in.")
                 return
             }
         }
@@ -229,7 +229,7 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
                         print("Response data: \(responseString)")
                     }
                 }
-                self?.displayWarning("Upload to server failed")
+                self?.displayWarning("Upload to server failed. Try to log out and log in again.")
                 completion(false)
             }
         }

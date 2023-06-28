@@ -534,18 +534,10 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         dateFormatter.dateFormat = "MMM_dd_HH_mm"
         let currentDate = dateFormatter.string(from: Date())
         
-        let imageName = "\(username)-\(option)-\(currentDate)-\(upc)-\(uuid).jpg"
+        let imageName = "\(username)-\(option)-\(upc)-\(currentDate)-\(uuid).jpg"
         
         return imageName
     }
-//    func getName(option: String) -> String {
-//        let username = (UserDefaults.standard.string(forKey: "user_id"))!
-//        let upc = barcodeValue
-//        let uuid = UUID().uuidString
-//        let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"
-//
-//        return imageName
-//    }
 
     func getAuthToken(completion: @escaping (String?) -> Void) {
         let urlString = "https://login.microsoftonline.com/6dfefb37-6886-4e5e-b19e-643474ed010b/oauth2/token"
