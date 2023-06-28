@@ -149,15 +149,15 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
     var capturedImages: [UIImage] = []
     
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
-        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
+//        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
 
 //        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
 //            guard let self = self else { return }
 //            self.startCameraSession()
 //        }
         
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
-            guard let self = self else { return }
+//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -168,20 +168,20 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
-        }
-        
-        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            
-            var configuration = PHPickerConfiguration()
-            configuration.selectionLimit = self.maxPhotoCount // Set the maximum number of photos to be selected
-            let picker = PHPickerViewController(configuration: configuration)
-            picker.delegate = self
-            present(picker, animated: true, completion: nil)
-        }
-        actionSheet.addAction(cameraAction)
-        actionSheet.addAction(libraryAction)
-        present(actionSheet, animated: true, completion: nil)
+//        }
+//
+//        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
+//
+//            var configuration = PHPickerConfiguration()
+//            configuration.selectionLimit = self.maxPhotoCount // Set the maximum number of photos to be selected
+//            let picker = PHPickerViewController(configuration: configuration)
+//            picker.delegate = self
+//            present(picker, animated: true, completion: nil)
+//        }
+//        actionSheet.addAction(cameraAction)
+//        actionSheet.addAction(libraryAction)
+//        present(actionSheet, animated: true, completion: nil)
     }
     
     func startCameraSession() {

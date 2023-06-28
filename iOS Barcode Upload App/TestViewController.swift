@@ -120,10 +120,10 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     }
     
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
-        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
-        
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
-            guard let self = self else { return }
+//        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
+//
+//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -135,22 +135,22 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
-        }
+//        }
+//
+//        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
+//
+//            var configuration = PHPickerConfiguration()
+//            configuration.selectionLimit = 40 // Set the maximum number of photos to be selected
+//            let picker = PHPickerViewController(configuration: configuration)
+//            picker.delegate = self
+//            present(picker, animated: true, completion: nil)
+//        }
         
-        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            
-            var configuration = PHPickerConfiguration()
-            configuration.selectionLimit = 40 // Set the maximum number of photos to be selected
-            let picker = PHPickerViewController(configuration: configuration)
-            picker.delegate = self
-            present(picker, animated: true, completion: nil)
-        }
-        
-        actionSheet.addAction(cameraAction)
-        actionSheet.addAction(libraryAction)
-        
-        present(actionSheet, animated: true, completion: nil)
+//        actionSheet.addAction(cameraAction)
+//        actionSheet.addAction(libraryAction)
+//
+//        present(actionSheet, animated: true, completion: nil)
     }
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
@@ -357,7 +357,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             return
         }
 
-        self.uploadImageToAzureStorage(imageData: barcodeImageData, imageName: image_Name_barcode, auth: self.AuthToken, option: "barcode-captures")  { success in
+        self.uploadImageToAzureStorage(imageData: barcodeImageData, imageName: image_Name_barcode, auth: self.AuthToken, option: "barcode-captures", accumulation: 0)  { success in
             if success {
                 print("Barcode Image upload task succeeded")
             } else {
@@ -378,7 +378,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             }
             let image_Name = getName(option: "product")
             
-            uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "product-captures")  { success in
+            uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "product-captures", accumulation: 0)  { success in
                 if success {
                     print("Image upload task succeeded")
                 } else {
@@ -403,7 +403,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             }
             let image_Name = getName(option: "test")
             
-            uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "test-captures")  { success in
+            uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "test-captures", accumulation: 0)  { success in
                 if success {
                     print("Image upload task succeeded")
                 } else {
@@ -419,6 +419,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         if allSuccessful == true {
 //            self.displaySuccess("Upload succeed, thank you.")
 //            self.hasUpload = true
+            sleep(1)
             completion(true)
         } else {
             completion(false)
@@ -453,19 +454,22 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         return formattedDateTime
     }
     
-    func uploadImageToAzureStorage(imageData: Data, imageName: String, auth: String, option: String, completion: @escaping (Bool) -> Void) {
+    func uploadImageToAzureStorage(imageData: Data, imageName: String, auth: String, option: String, accumulation: Int, completion: @escaping (Bool) -> Void) {
         
         let storageAccount = "ultronai4walmart"
         let container = option
         
         let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
-        print(urlstring)
-        if container == "test-captures" {
-            testImageDatas.append(urlstring)
-        } else if container == "barcode-captures" {
-            barcodeImageData = urlstring
-        } else {
-            productImageDatas.append(urlstring)
+        
+//        print(urlstring)
+        if (accumulation == 0) {
+            if container == "test-captures" {
+                testImageDatas.append(urlstring)
+            } else if container == "barcode-captures" {
+                barcodeImageData = urlstring
+            } else {
+                productImageDatas.append(urlstring)
+            }
         }
         
         guard let url = URL(string: urlstring) else {
@@ -488,13 +492,26 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         let task = session.uploadTask(with: request, from: imageData) { (data,response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 {
                 print("Image uploaded succeed with status code 201: " + imageName)
-            }  else {
-                let httpResponse = response as? HTTPURLResponse
-                self.displayWarning(imageName + " error with code " + String(httpResponse?.statusCode ?? 0))
-                if let data = data,
-                   let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let message = responseJSON["detail"] as? String {
-                    print(message)
+            } else {
+                if (accumulation < 3) {
+                    self.uploadImageToAzureStorage(imageData: imageData, imageName: imageName, auth: auth, option: option, accumulation: accumulation+1) {
+                        success in
+                        if success {
+                            print("Barcode Image upload task succeeded")
+                        } else {
+                            self.allSuccessful = false
+                            self.displayWarning("Barcode Image upload task failed")
+                            return
+                        }
+                    }
+                } else {
+                    let httpResponse = response as? HTTPURLResponse
+                    self.displayWarning(imageName + " error with code " + String(httpResponse?.statusCode ?? 0))
+                    if let data = data,
+                       let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let message = responseJSON["detail"] as? String {
+                        print(message)
+                    }
                 }
             }
         }

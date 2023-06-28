@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let elapsedTimeInSeconds = Int(timeInterval)
         print("elapsedTimeInSeconds: ", elapsedTimeInSeconds)
         
-        let maxElapsedTimeInSeconds = 26 * 60 // Unit: second
+        let maxElapsedTimeInSeconds = 55 * 60 // Unit: second
 
         if elapsedTimeInSeconds > maxElapsedTimeInSeconds {
             print("needed")
@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func startTokenRefreshTimer() {
         print("startTokenRefreshTimer called")
-        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [weak self] _ in
+        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 120 * 60, repeats: true) { [weak self] _ in
             let defaults = UserDefaults.standard
             let refreshtoken = defaults.string(forKey: "refresh")
             self?.refreshAccessToken(refreshToken: refreshtoken ?? "no") { result in

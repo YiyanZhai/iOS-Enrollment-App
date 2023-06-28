@@ -154,10 +154,10 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBAction func uploadButtonTapped(_ sender: UIButton) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
+//        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
         
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
-            guard let self = self else { return }
+//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 imagePicker.sourceType = .camera
                 self.present(imagePicker, animated: true, completion: nil)
@@ -166,18 +166,18 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
-        }
+//        }
         
-        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            imagePicker.sourceType = .photoLibrary
-            self.present(imagePicker, animated: true, completion: nil)
-        }
-        
-        actionSheet.addAction(cameraAction)
-        actionSheet.addAction(libraryAction)
-        
-        present(actionSheet, animated: true, completion: nil)
+//        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
+//            guard let self = self else { return }
+//            imagePicker.sourceType = .photoLibrary
+//            self.present(imagePicker, animated: true, completion: nil)
+//        }
+//
+//        actionSheet.addAction(cameraAction)
+//        actionSheet.addAction(libraryAction)
+//
+//        present(actionSheet, animated: true, completion: nil)
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
