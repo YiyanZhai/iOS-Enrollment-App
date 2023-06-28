@@ -419,7 +419,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         if allSuccessful == true {
 //            self.displaySuccess("Upload succeed, thank you.")
 //            self.hasUpload = true
-            sleep(1)
+//            sleep(1)
             completion(true)
         } else {
             completion(false)
