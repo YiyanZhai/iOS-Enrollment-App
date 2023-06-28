@@ -573,6 +573,13 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
 
     }
     @IBAction func clearAllButtonTapped(_ sender: Any) {
+        let sharedData = DataStore.shared
+        sharedData.selectedTestImages = [] // Set the selectedImages value
+        sharedData.selectedProductImages = [] // Set the selectedImages value
+        sharedData.flagValue = 0
+        sharedData.testMetadata = []
+        sharedData.productMetadata = []
+        
         let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)

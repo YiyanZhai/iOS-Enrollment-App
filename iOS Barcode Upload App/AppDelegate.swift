@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func startTokenRefreshTimer() {
         print("startTokenRefreshTimer called")
-        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 25 * 60, repeats: true) { [weak self] _ in
+        tokenRefreshTimer = Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [weak self] _ in
             let defaults = UserDefaults.standard
             let refreshtoken = defaults.string(forKey: "refresh")
             self?.refreshAccessToken(refreshToken: refreshtoken ?? "no") { result in

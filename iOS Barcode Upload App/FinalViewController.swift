@@ -97,6 +97,13 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
     }
     
     @IBAction func clearAllButtonTapped(_ sender: Any) {
+        let sharedData = DataStore.shared
+        sharedData.selectedTestImages = [] // Set the selectedImages value
+        sharedData.selectedProductImages = [] // Set the selectedImages value
+        sharedData.flagValue = 0
+        sharedData.testMetadata = []
+        sharedData.productMetadata = []
+        
         let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -124,6 +131,9 @@ class FinalViewController: UIViewController, UIImagePickerControllerDelegate & U
                     let sharedData = DataStore.shared
                     sharedData.selectedTestImages = [] // Set the selectedImages value
                     sharedData.selectedProductImages = [] // Set the selectedImages value
+                    sharedData.flagValue = 0
+                    sharedData.testMetadata = []
+                    sharedData.productMetadata = []
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
                     self?.navigationController?.pushViewController(nextVC, animated: true)

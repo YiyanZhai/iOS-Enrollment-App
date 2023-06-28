@@ -263,7 +263,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
 //            print("No metadata extracted.")
 //        }
         
-        if selectedImages.count < 40 {
+        if selectedImages.count < 100 {
             selectedImages.append(image)
             self.updateScrollView()
         }
@@ -271,6 +271,13 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
     }
     
     @IBAction func clearAllButtonTapped(_ sender: Any) {
+        let sharedData = DataStore.shared
+        sharedData.selectedTestImages = [] // Set the selectedImages value
+        sharedData.selectedProductImages = [] // Set the selectedImages value
+        sharedData.flagValue = 0
+        sharedData.testMetadata = []
+        sharedData.productMetadata = []
+        
         let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
