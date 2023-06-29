@@ -10,7 +10,7 @@ import PhotosUI
 import Foundation
 import AVFoundation
 
-class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AVCapturePhotoCaptureDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     private let maxPhotoCount = 100
     
     var hasUpload = false
@@ -25,6 +25,13 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
     var allSuccessful = false
     var productImageDatas: [String] = []
     var barcodeImageData = ""
+    
+    var selectedImages: [UIImage] = []
+    var captureSession: AVCaptureSession?
+    var previewLayer: AVCaptureVideoPreviewLayer?
+    var capturedImages: [UIImage] = []
+    
+    private var flagValue = 0
     
     @IBOutlet weak var UsernameTextBox: UITextField!
     @IBOutlet weak var pic: UIImageView!
@@ -53,35 +60,20 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         }
     }
     
-    private var flagValue = 0
-    
     override func viewDidLoad() {
-//        print("viewDidLoad second")
         super.viewDidLoad()
-        
         let sharedData = DataStore.shared
         self.selectedImages = sharedData.selectedProductImages
         self.productMetadata = sharedData.productMetadata
         self.updateScrollView()
-//        self.hasUpload = sharedData.hasUploadProduct
-//        if self.selectedImages.count != 0 {
-//            self.isReuse = true
-//        }
-//        self.allSuccessful = sharedData.allSuccessful
-//        self.AuthToken = sharedData.AuthToken
-        
         self.flagValue = sharedData.flagValue
         let color: UIColor = (flagValue == 0) ? .green : .red
         flagButton.tintColor = color
         
-        // Hide the delete buttons initially
-        
         let defaults = UserDefaults.standard
-//        print("username",defaults.string(forKey: "username") as Any)
         if defaults.string(forKey: "username") != Optional("none") {
             UsernameTextBox.text = (defaults.string(forKey: "username") ?? "default")
         }
-//        print("profile_image_url",defaults.string(forKey: "profile_image_url") as Any)
         let profile_image_url = defaults.string(forKey: "profile_image_url")
         let p = profile_image_url ?? "https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
         let imageURL = URL(string: p)
@@ -93,18 +85,15 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             }
         }
     }
-    
     override func viewDidAppear(_ animated: Bool) {
-//        print("viewDidAppear second")
         let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
         UsernameTextBox.addGestureRecognizer(tapGesture1)
         UsernameTextBox.isUserInteractionEnabled = true
     }
     
+    
     @IBAction func flagButtonTapped(_ sender: Any) {
         flagValue = (flagValue == 0) ? 1 : 0
-//        let title = "\(flagValue)"
-//        flagButton.setTitle(title, for: .normal)
         let color: UIColor = (flagValue == 0) ? .green : .red
         flagButton.tintColor = color
     }
@@ -134,168 +123,30 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
     }
     
     @IBOutlet weak var flagButton: UIButton!
-    
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
-    
     @IBOutlet weak var product_upload_button: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     
-    var selectedImages: [UIImage] = []
-    
-    
-    var captureSession: AVCaptureSession?
-    var previewLayer: AVCaptureVideoPreviewLayer?
-    var capturedImages: [UIImage] = []
     
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
-//        let actionSheet = UIAlertController(title: "Select Photo Source", message: nil, preferredStyle: .actionSheet)
-
-//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
-//            guard let self = self else { return }
-//            self.startCameraSession()
-//        }
-        
-//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
-//            guard let self = self else { return }
-            let imagePicker = UIImagePickerController()
-            imagePicker.delegate = self
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                imagePicker.sourceType = .camera
-                self.present(imagePicker, animated: true, completion: nil)
-            } else {
-                let alert = UIAlertController(title: "Error", message: "Camera not available", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
-//        }
-//
-//        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
-//            guard let self = self else { return }
-//
-//            var configuration = PHPickerConfiguration()
-//            configuration.selectionLimit = self.maxPhotoCount // Set the maximum number of photos to be selected
-//            let picker = PHPickerViewController(configuration: configuration)
-//            picker.delegate = self
-//            present(picker, animated: true, completion: nil)
-//        }
-//        actionSheet.addAction(cameraAction)
-//        actionSheet.addAction(libraryAction)
-//        present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func startCameraSession() {
-        // Check if the device has a camera
-        guard let device = AVCaptureDevice.default(for: .video) else {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imagePicker.sourceType = .camera
+            self.present(imagePicker, animated: true, completion: nil)
+        } else {
             let alert = UIAlertController(title: "Error", message: "Camera not available", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-            return
         }
-
-        do {
-            // Create an input using the device
-            let input = try AVCaptureDeviceInput(device: device)
-
-            // Create a capture session
-            captureSession = AVCaptureSession()
-            captureSession?.addInput(input)
-
-            // Create a preview layer to display the camera feed
-            previewLayer = AVCaptureVideoPreviewLayer(session: captureSession!)
-            previewLayer?.videoGravity = .resizeAspectFill
-            previewLayer?.frame = view.bounds
-            view.layer.addSublayer(previewLayer!)
-
-            // Start the capture session
-            captureSession?.startRunning()
-        } catch {
-            print("Error setting up camera: \(error.localizedDescription)")
-        }
-    }
-    
-    @IBAction func takePhotoButtonTapped(_ sender: UIButton) {
-        guard let captureSession = captureSession else { return }
-
-        // Create a photo output
-        let photoOutput = AVCapturePhotoOutput()
-        if captureSession.canAddOutput(photoOutput) {
-            captureSession.addOutput(photoOutput)
-
-            // Configure the photo settings
-            let photoSettings = AVCapturePhotoSettings()
-            photoSettings.isHighResolutionPhotoEnabled = true
-
-            // Capture the photo
-            photoOutput.capturePhoto(with: photoSettings, delegate: self)
-        }
-    }
-    
-    @IBAction func exitCaptureSession(_ sender: UIButton) {
-        // Perform necessary actions to exit the capture session
-        
-        // Append the captured images to the selected data
-        selectedImages += capturedImages
-        
-        // Update the scroll view with the new images
-        updateScrollView()
-        
-        // Reset the capturedImages array
-        capturedImages.removeAll()
-    }
-
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
-            // Add the captured image to the array
-            capturedImages.append(image)
-        }
-    }
-
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        dismiss(animated: true, completion: nil)
-        
-//        let requestOptions = PHImageRequestOptions()
-//        requestOptions.isSynchronous = true
-//        for result in results {
-//            if let assetIdentifier = result.assetIdentifier {
-//                PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil).enumerateObjects { (phAsset, _, _) in
-//                    PHImageManager.default().requestImageData(for: phAsset, options: requestOptions) { (data, _, _, info) in
-//                        if let metadata = info?[kCGImagePropertyExifDictionary as String] as? NSDictionary {
-//                            print("Metadata got!")
-//                            let metadataString = metadata.description
-//                            print("Metadata: \(metadataString)")
-//                            self.productMetadata.append(metadataString)
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        print(self.productMetadata.count)
-
-        for result in results {
-            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
-                    if let image = image as? UIImage {
-                        DispatchQueue.main.async {
-                            if self?.selectedImages.count ?? 0 < 100 {
-                                self?.productMetadata.append("placeholder")
-                                self?.selectedImages.append(image)
-                                self?.updateScrollView()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        print(self.productMetadata.count)
-        print(self.selectedImages.count)
     }
     
     func updateScrollView() {
         scrollView.subviews.forEach { $0.removeFromSuperview() }
 
         let scrollViewHeight: CGFloat = scrollView.bounds.height
-        let spacing: CGFloat = 15.0 // Adjust the spacing here
+        let spacing: CGFloat = 15.0
 
         var contentWidth: CGFloat = 0.0
 
@@ -318,8 +169,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             deleteButton.setTitle("Remove", for: .normal)
             deleteButton.frame = CGRect(x: 0, y: imageHeight - 30, width: imageWidth, height: 30)
             deleteButton.addTarget(self, action: #selector(deleteButtonTapped(_:)), for: .touchUpInside)
-            deleteButton.tag = index // Set the tag to identify the corresponding image
-            // Set colors
+            deleteButton.tag = index
             deleteButton.backgroundColor = UIColor.red.withAlphaComponent(0.35)
             deleteButton.setTitleColor(.white, for: .normal)
             deleteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
@@ -347,18 +197,11 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         }
         
         if let metadata = info[UIImagePickerController.InfoKey.mediaMetadata] as? NSDictionary {
-//            do {
-//                let jsonData = try JSONSerialization.data(withJSONObject: metadata, options: .prettyPrinted)
-//                let jsonString = String(data: jsonData, encoding: .utf8)
-//                print("JSON string: \(jsonString ?? "")")
-//            } catch {
-//                print("Error serializing metadata to JSON: \(error)")
-//            }
-
             var current = ""
+            print(UIDevice.current.identifierForVendor!.uuidString)
             for (key, value) in metadata {
+                print(key,value)
                 var thisMetadata = ""
-//                print(key, type(of: value))
                 if let v = metadata.value(forKey: key as! String) as? NSDictionary {
                     for (key1, value1) in v {
                         let newline = "\"\(key1)\":\"\(value1)\","
@@ -370,28 +213,10 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
                 }  else if let data = metadata.value(forKey: key as! String) as? NSData {
                     thisMetadata = String(data: data as Data, encoding: .utf8) ?? ""
                 }
-//                print(thisMetadata)
                 current += "\"\(key)\":\"\(thisMetadata)\","
             }
             print("New Metadata Element: ",String(current.dropLast()))
             self.productMetadata.append(String(current.dropLast()))
-//            let metadata0 = metadata.value(forKey: "{Exif}") as! NSDictionary
-//            var thisMetadata = ""
-//            for (key, value) in metadata0 {
-//                let newline = "\"\(key)\":\"\(value)\","
-//                thisMetadata += newline
-//                print(newline, type(of: value))
-//            }
-//            print(thisMetadata)
-//            self.productMetadata.append(String(thisMetadata.dropLast()))
-//            if let metadata0 = metadata.value(forKey: "{Exif}") {
-//                let metadataStr = (metadata0 as! NSDictionary).description
-//                print("Exif Metadata: \(metadataStr)")
-//            }
-//            self.productMetadata.append(metadata.description)
-//            print("Product meta: ",type(of: metadata))
-//            print("Product Meta: ")
-//            print(metadata.description)
             print(productMetadata.count)
         } else {
             self.productMetadata.append("placeholder")
@@ -429,6 +254,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         }
     }
     
+    
     @IBAction func goBack(_ sender: Any) {
         let sharedData = DataStore.shared
         sharedData.selectedProductImages = self.selectedImages // Set the selectedImages value
@@ -438,17 +264,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         self.navigationController?.popViewController(animated: true)
     }
     
-    func getCurrentDateTime() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
-        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
-        
-        let currentDateTime = Date()
-        let formattedDateTime = dateFormatter.string(from: currentDateTime)
-        
-        return formattedDateTime
-    }
     
     func uploadImageToAzureStorage(imageData: Data, imageName: String, auth: String, option: String, completion: @escaping (Bool) -> Void) {
         
@@ -459,8 +274,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         print(urlstring)
         if container == "barcode-captures" {
             barcodeImageData = urlstring
-        } else {
-            
+        } else {  
             productImageDatas.append(urlstring)
         }
         
@@ -483,20 +297,23 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         
         let task = session.uploadTask(with: request, from: imageData) { (data,response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 {
-                print("Image uploaded succeed with status code 201: " + imageName)
-            }  else {
-                // Handle error response
-                print(imageName+" error with code")
-                self.displayWarning(imageName+" error with code")
-                let httpResponse = response as? HTTPURLResponse
-                print(httpResponse?.statusCode as Any)
-                if let data = data,
-                   let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let message = responseJSON["detail"] as? String {
-                    print(message)
+                print("\(container): Image uploaded succeed with status code 201: " + imageName)
+                self.productImageDatas.append(urlstring)
+                print("Product container has " + String(self.productImageDatas.count) + " images uploaded.")
+            } else {
+                    self.allSuccessful = false
+                    let httpResponse = response as? HTTPURLResponse
+                    if let data = data,
+                       let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let message = responseJSON["detail"] as? String {
+                        print(message)
+                        self.displayWarning(imageName + " " + String(httpResponse?.statusCode ?? 0) + " Error. " + message)
+                    } else {
+                        self.displayWarning(imageName + " " + String(httpResponse?.statusCode ?? 0) + " Error.")
+                    }
                 }
             }
-        }
+        
         task.resume()
     }
     
@@ -521,7 +338,6 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
                 // Handle the error condition
             }
         }
-//        sleep(2)
         
         print("start uploading barcode images to server")
         
@@ -566,47 +382,20 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             }
         }
         
-        if allSuccessful == true {
-//            self.displaySuccess("Upload succeed, thank you.")
-            hasUpload = true
-        }
-
     }
-    @IBAction func clearAllButtonTapped(_ sender: Any) {
-        let sharedData = DataStore.shared
-        sharedData.selectedTestImages = [] // Set the selectedImages value
-        sharedData.selectedProductImages = [] // Set the selectedImages value
-        sharedData.flagValue = 0
-        sharedData.testMetadata = []
-        sharedData.productMetadata = []
-        
-        let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        alertController.addAction(cancelAction)
-        
-        let confirmAction = UIAlertAction(title: "Confirm", style: .destructive) { [weak self] (_) in
-            // User confirmed, start a new session
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
-            self?.navigationController?.pushViewController(nextVC, animated: true)
-        }
-        alertController.addAction(confirmAction)
-        
-        present(alertController, animated: true, completion: nil)
-    }
-
     
-    func getName(option: String) -> String {
-        let username = (UserDefaults.standard.string(forKey: "user_id"))!
-//        let username = "default"
-        let upc = barcodeValue
-        let uuid = UUID().uuidString
-        let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"
-        
-        return imageName
+    
+    func getCurrentDateTime() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
+        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
+        let currentDateTime = Date()
+        let formattedDateTime = dateFormatter.string(from: currentDateTime)
+        return formattedDateTime
     }
-
+    
+    
     func getAuthToken(completion: @escaping (String?) -> Void) {
         let urlString = "https://login.microsoftonline.com/6dfefb37-6886-4e5e-b19e-643474ed010b/oauth2/token"
         let clientId = "1b1d367b-a8fc-41f5-922c-6e62da393234"
@@ -647,7 +436,42 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
         
         sleep(1)
     }
+    
+    
+    @IBAction func clearAllButtonTapped(_ sender: Any) {
+        let sharedData = DataStore.shared
+        sharedData.selectedTestImages = [] // Set the selectedImages value
+        sharedData.selectedProductImages = [] // Set the selectedImages value
+        sharedData.flagValue = 0
+        sharedData.testMetadata = []
+        sharedData.productMetadata = []
+        
+        let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .destructive) { [weak self] (_) in
+            // User confirmed, start a new session
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
+            self?.navigationController?.pushViewController(nextVC, animated: true)
+        }
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
 
+    
+    func getName(option: String) -> String {
+        let username = (UserDefaults.standard.string(forKey: "user_id"))!
+        let upc = barcodeValue
+        let uuid = UUID().uuidString
+        let imageName = "\(username)-\(option)-\(upc)-\(uuid).jpg"
+        
+        return imageName
+    }
+    
 
     func displayWarning(_ message: String) {
         DispatchQueue.main.async {
@@ -656,6 +480,8 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
+    
     func displaySuccess(_ message: String) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
@@ -663,5 +489,7 @@ class SecondViewController: UIViewController, PHPickerViewControllerDelegate, AV
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
+    
 }
 

@@ -106,16 +106,12 @@ class FirstViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     @objc func showLogoutOption() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
         let logoutAction = UIAlertAction(title: "Log Out", style: .destructive) { _ in
             self.logOutTapped()
         }
-        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
         alertController.addAction(logoutAction)
         alertController.addAction(cancelAction)
-        
         present(alertController, animated: true, completion: nil)
     }
 

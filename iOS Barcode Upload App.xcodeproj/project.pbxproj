@@ -530,6 +530,8 @@
 				INFOPLIST_FILE = "iOS Barcode Upload App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Image Upload";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need to take barcode and product photos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Need to store images.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need to store images.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -566,6 +568,8 @@
 				INFOPLIST_FILE = "iOS Barcode Upload App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Image Upload";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need to take barcode and product photos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Need to store images.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need to store images.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

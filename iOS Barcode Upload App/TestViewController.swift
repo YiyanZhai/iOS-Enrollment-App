@@ -7,10 +7,11 @@
 
 import UIKit
 import PhotosUI
+import Photos
 import Foundation
 import CoreImage
 
-class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class TestViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
 
     var selectedImages: [UIImage] = []
@@ -135,43 +136,9 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
-//        }
-//
-//        let libraryAction = UIAlertAction(title: "Photo Library", style: .default) { [weak self] _ in
-//            guard let self = self else { return }
-//
-//            var configuration = PHPickerConfiguration()
-//            configuration.selectionLimit = 40 // Set the maximum number of photos to be selected
-//            let picker = PHPickerViewController(configuration: configuration)
-//            picker.delegate = self
-//            present(picker, animated: true, completion: nil)
-//        }
-        
-//        actionSheet.addAction(cameraAction)
-//        actionSheet.addAction(libraryAction)
-//
-//        present(actionSheet, animated: true, completion: nil)
     }
 
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        dismiss(animated: true, completion: nil)
-        for result in results {
-            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
-                    if let image = image as? UIImage {
-                        DispatchQueue.main.async {
-                            if self?.selectedImages.count ?? 0 < 40 {
-                                self?.testMetadata.append("placeholder")
-                                self?.selectedImages.append(image)
-                                self?.updateScrollView()
-                            }
-                        }
-                    }
-                    print(self?.testMetadata.count)
-                }
-            }
-        }
-    }
+    
     func updateScrollView() {
         scrollView.subviews.forEach { $0.removeFromSuperview() }
         
@@ -232,7 +199,6 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             var current = ""
             for (key, value) in metadata {
                 var thisMetadata = ""
-                print(key, type(of: value))
                 if let v = metadata.value(forKey: key as! String) as? NSDictionary {
                     for (key1, value1) in v {
                         let newline = "\"\(key1)\":\"\(value1)\","
@@ -243,9 +209,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                     thisMetadata = number.stringValue
                 }  else if let data = metadata.value(forKey: key as! String) as? NSData {
                     thisMetadata = String(data: data as Data, encoding: .utf8) ?? ""
-                    print(data)
                 }
-                print(thisMetadata)
                 current += "\"\(key)\":\"\(thisMetadata)\","
             }
             self.testMetadata.append(String(current.dropLast()))
@@ -265,6 +229,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         
         if selectedImages.count < 100 {
             selectedImages.append(image)
+//            saveImageToCustomAlbum(image: image)
             self.updateScrollView()
         }
         self.dismiss(animated: true, completion: nil)
@@ -301,20 +266,45 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             return
         }
         
+//        for inputImage in (self.productImages + self.selectedImages) {
+//            let image_name = getName(option: "product")
+//            print(image_name)
+//            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+//                return
+//            }
+//            let fileURL = documentsDirectory.appendingPathComponent(image_name)
+//            displayWarning(fileURL.absoluteString)
+//            do {
+//                try inputImage.jpegData(compressionQuality: 1.0)?.write(to: fileURL)
+//                // Save the image to the photo library
+//                UIImageWriteToSavedPhotosAlbum(inputImage, self, nil, nil)
+//            } catch {
+//                print("Error saving image: \(error.localizedDescription)")
+//            }
+//            let filePath = "\(paths[0])/\(image_name)"
+//            UIImagePNGRepresentation(inputImage)?.writeToFile(filePath, atomically: true)
+//            let image_name = getName(option: "product")
+//            guard let inputImage = UIImage(named: image_name) else {
+//                self.displayWarning("failed to name image")
+//                return
+//            }
+//            UIImageWriteToSavedPhotosAlbum(inputImage, nil, nil, nil)
+//        }
+        
         self.uploadEverythingToServer() { [weak self] success in
             if success {
-                print(self?.testImageDatas.count, self?.selectedImages.count,self?.productImageDatas.count, self?.productImages.count)
-
+                print("success:", self?.testImageDatas.count, self?.selectedImages.count,self?.productImageDatas.count, self?.productImages.count)
+                
                 if self?.AuthToken == "" || self?.testImageDatas.count != self?.selectedImages.count || self?.allSuccessful == false || self?.productImageDatas.count != self?.productImages.count {
-                    self?.displayWarning("All product Images needed to be uploaded successfully.")
+                    self?.displayWarning("Images upload not finished. Save these images to local photo library.")
                     return
                 }
-                
-                if self?.testImageDatas.count != self?.testMetadata.count || self?.productImageDatas.count != self?.productMetadata.count {
+
+                if self?.selectedImages.count != self?.testMetadata.count || self?.productImages.count != self?.productMetadata.count {
                     self?.displayWarning("Metadata count doesn't match.")
                     return
                 }
-                
+
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 if let nextVC = storyboard.instantiateViewController(withIdentifier: "Final") as? FinalViewController {
                     // Pass the data to the test view controller
@@ -329,13 +319,16 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 }
             } else {
                 // Handle upload failure
-                self?.displayWarning("Upload to server failed")
+                self?.displayWarning("Upload to cloud server failed")
                 return
             }
         }
     }
     
     func uploadEverythingToServer(completion: @escaping (Bool) -> Void) {
+        
+//        let cur = date?.timeIntervalSince1970
+//        let expires =
         getAuthToken { authToken in
             if authToken != nil {
                 self.AuthToken = authToken ?? "no authToken"
@@ -346,20 +339,17 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         }
         self.allSuccessful = true
         
-        print("start uploading barcode images to server")
+        print("start uploading barcode images to cloud server")
         
-        let option = "barcode"
-        let image_Name_barcode = getName(option: option)
-        
+        let image_Name_barcode = getName(option: "barcode")
         guard let barcodeImageData = barcodeImage?.jpegData(compressionQuality: 1.0) else {
             self.displayWarning("Failed to convert barcode image to data")
             self.allSuccessful = false
             return
         }
-
         self.uploadImageToAzureStorage(imageData: barcodeImageData, imageName: image_Name_barcode, auth: self.AuthToken, option: "barcode-captures", accumulation: 0)  { success in
             if success {
-                print("Barcode Image upload task succeeded")
+                print(image_Name_barcode+"Barcode Image upload task succeeded")
             } else {
                 self.allSuccessful = false
                 self.displayWarning("Barcode Image upload task failed")
@@ -377,16 +367,16 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 return
             }
             let image_Name = getName(option: "product")
-            
             uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "product-captures", accumulation: 0)  { success in
                 if success {
-                    print("Image upload task succeeded")
+                    print(image_Name+"Image upload task succeeded (product)")
                 } else {
                     self.allSuccessful = false
-                    print("Image upload task failed")
+                    print(image_Name+"Image upload task failed (product)")
                 }
             }
         }
+        print("product end with counnt: ", self.productImageDatas.count)
         
         if selectedImages.count == 0 {
             self.displayWarning("Please upload test image(s).")
@@ -405,21 +395,19 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
             
             uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "test-captures", accumulation: 0)  { success in
                 if success {
-                    print("Image upload task succeeded")
+                    print(image_Name+"Image upload task succeeded (test)")
                 } else {
                     self.allSuccessful = false;
-                    print("Image upload task failed")
+                    print(image_Name+"Image upload task failed (test)")
                 }
             }
             if self.allSuccessful == false {
                 self.displayWarning("Failed to upload all images to storage.")
             }
         }
+        print("test end with count: ", self.testImageDatas.count)
         
-        if allSuccessful == true {
-//            self.displaySuccess("Upload succeed, thank you.")
-//            self.hasUpload = true
-//            sleep(1)
+        if self.allSuccessful == true {
             completion(true)
         } else {
             completion(false)
@@ -447,30 +435,15 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
-        
         let currentDateTime = Date()
         let formattedDateTime = dateFormatter.string(from: currentDateTime)
-        
         return formattedDateTime
     }
     
     func uploadImageToAzureStorage(imageData: Data, imageName: String, auth: String, option: String, accumulation: Int, completion: @escaping (Bool) -> Void) {
-        
         let storageAccount = "ultronai4walmart"
         let container = option
-        
         let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
-        
-//        print(urlstring)
-        if (accumulation == 0) {
-            if container == "test-captures" {
-                testImageDatas.append(urlstring)
-            } else if container == "barcode-captures" {
-                barcodeImageData = urlstring
-            } else {
-                productImageDatas.append(urlstring)
-            }
-        }
         
         guard let url = URL(string: urlstring) else {
             print("Invalid URL")
@@ -483,6 +456,9 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         request.setValue("BlockBlob", forHTTPHeaderField: "x-ms-blob-type")
         request.setValue("Bearer \(auth)", forHTTPHeaderField: "Authorization")
         request.setValue("2020-08-04", forHTTPHeaderField: "x-ms-version")
+        request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+        request.setValue("\(imageData.count)", forHTTPHeaderField: "Content-Length")
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = ""
         let dateString = getCurrentDateTime()
@@ -491,43 +467,37 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
         
         let task = session.uploadTask(with: request, from: imageData) { (data,response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 {
-                print("Image uploaded succeed with status code 201: " + imageName)
-            } else {
-                if (accumulation < 3) {
-                    self.uploadImageToAzureStorage(imageData: imageData, imageName: imageName, auth: auth, option: option, accumulation: accumulation+1) {
-                        success in
-                        if success {
-                            print("Barcode Image upload task succeeded")
-                        } else {
-                            self.allSuccessful = false
-                            self.displayWarning("Barcode Image upload task failed")
-                            return
-                        }
-                    }
+                print("\(container): Image uploaded succeed with status code 201: " + imageName)
+                if option == "test-captures" {
+                    self.testImageDatas.append(urlstring)
+                } else if option == "product-captures" {
+                    self.productImageDatas.append(urlstring)
                 } else {
+                    self.barcodeImageData = urlstring
+                }
+                print("\(option) container has " + String(self.testImageDatas.count) + " images uploaded.")
+                completion(true)
+            } else {
+                    self.allSuccessful = false
                     let httpResponse = response as? HTTPURLResponse
-                    self.displayWarning(imageName + " error with code " + String(httpResponse?.statusCode ?? 0))
                     if let data = data,
                        let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                        let message = responseJSON["detail"] as? String {
                         print(message)
+                        self.displayWarning(imageName + " " + String(httpResponse?.statusCode ?? 0) + " Error. " + message)
+                    } else {
+                        self.displayWarning(imageName + " " + String(httpResponse?.statusCode ?? 0) + " Error.")
                     }
                 }
+                completion(false)
             }
-        }
+        
         task.resume()
     }
     
-//    func uploadTestToServer() {
-////        if hasUpload != false {
-////            self.displayWarning("Images already uploaded.")
-////            return
-////        }
-//    }
-    
     func getName(option: String) -> String {
         let username = UserDefaults.standard.string(forKey: "user_id") ?? ""
-        let upc = barcodeValue
+        let upc = self.barcodeValue
         let uuid = UUID().uuidString
         
         let dateFormatter = DateFormatter()
@@ -572,6 +542,7 @@ class TestViewController: UIViewController, PHPickerViewControllerDelegate, UIIm
                 completion(nil)
                 return
             }
+            print(json)
             completion(authToken)
         }
 
