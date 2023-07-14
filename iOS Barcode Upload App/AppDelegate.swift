@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let elapsedTimeInSeconds = Int(timeInterval)
         print("elapsedTimeInSeconds: ", elapsedTimeInSeconds)
         
-        let maxElapsedTimeInSeconds = 55 * 60 // Unit: second
+        let maxElapsedTimeInSeconds = 150 * 60 // Unit: second
 
         if elapsedTimeInSeconds > maxElapsedTimeInSeconds {
             print("needed")

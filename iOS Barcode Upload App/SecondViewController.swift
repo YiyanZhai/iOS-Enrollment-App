@@ -11,11 +11,10 @@ import Foundation
 import AVFoundation
 
 class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    private let maxPhotoCount = 100
+    private let maxPhotoCount = 7
     
+//    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     var hasUpload = false
-    var barcodeMetadata = ""
-    var productMetadata: [String] = []
     
     // from FirstViewController
     var barcodeValue: String = ""
@@ -23,15 +22,11 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
     
     var AuthToken = ""
     var allSuccessful = false
-    var productImageDatas: [String] = []
-    var barcodeImageData = ""
     
     var selectedImages: [UIImage] = []
     var captureSession: AVCaptureSession?
     var previewLayer: AVCaptureVideoPreviewLayer?
     var capturedImages: [UIImage] = []
-    
-    private var flagValue = 0
     
     @IBOutlet weak var UsernameTextBox: UITextField!
     @IBOutlet weak var pic: UIImageView!
@@ -59,16 +54,20 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
             }
         }
     }
-    
+    var activityIndicator: UIActivityIndicatorView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.activityIndicator = UIActivityIndicatorView(style: .large)
+        self.activityIndicator.center = CGPoint(x:view.center.x,y:680)
+        self.activityIndicator.hidesWhenStopped = true
+        self.activityIndicator.color = .white
+        view.addSubview(self.activityIndicator)
+
+        
         let sharedData = DataStore.shared
         self.selectedImages = sharedData.selectedProductImages
-        self.productMetadata = sharedData.productMetadata
         self.updateScrollView()
-        self.flagValue = sharedData.flagValue
-        let color: UIColor = (flagValue == 0) ? .green : .red
-        flagButton.tintColor = color
         
         let defaults = UserDefaults.standard
         if defaults.string(forKey: "username") != Optional("none") {
@@ -85,19 +84,12 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
             }
         }
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(showLogoutOption))
         UsernameTextBox.addGestureRecognizer(tapGesture1)
         UsernameTextBox.isUserInteractionEnabled = true
     }
-    
-    
-    @IBAction func flagButtonTapped(_ sender: Any) {
-        flagValue = (flagValue == 0) ? 1 : 0
-        let color: UIColor = (flagValue == 0) ? .green : .red
-        flagButton.tintColor = color
-    }
-    
     
     @objc func showLogoutOption() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -122,14 +114,16 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
         self.performSegue(withIdentifier: "goLogIn2", sender: self)
     }
     
-    @IBOutlet weak var flagButton: UIButton!
     @IBOutlet weak var prev_button: UIButton!
     @IBOutlet weak var next_button: UIButton!
     @IBOutlet weak var product_upload_button: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     
-    
     @IBAction func selectPhotosButtonTapped(_ sender: UIButton) {
+        if self.selectedImages.count > self.maxPhotoCount {
+            displayWarning("Image number exceeded.")
+            return
+        }
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -186,7 +180,6 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
     @objc func deleteButtonTapped(_ sender: UIButton) {
         let index = sender.tag
         selectedImages.remove(at: index)
-        productMetadata.remove(at: index)
         updateScrollView()
     }
     
@@ -196,256 +189,136 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
             return
         }
         
-        if let metadata = info[UIImagePickerController.InfoKey.mediaMetadata] as? NSDictionary {
-            var current = ""
-            print(UIDevice.current.identifierForVendor!.uuidString)
-            for (key, value) in metadata {
-                print(key,value)
-                var thisMetadata = ""
-                if let v = metadata.value(forKey: key as! String) as? NSDictionary {
-                    for (key1, value1) in v {
-                        let newline = "\"\(key1)\":\"\(value1)\","
-                        thisMetadata += newline
-                    }
-                    thisMetadata = String(thisMetadata.dropLast())
-                } else if let number = metadata.value(forKey: key as! String) as? NSNumber {
-                    thisMetadata = number.stringValue
-                }  else if let data = metadata.value(forKey: key as! String) as? NSData {
-                    thisMetadata = String(data: data as Data, encoding: .utf8) ?? ""
-                }
-                current += "\"\(key)\":\"\(thisMetadata)\","
-            }
-            print("New Metadata Element: ",String(current.dropLast()))
-            self.productMetadata.append(String(current.dropLast()))
-            print(productMetadata.count)
-        } else {
-            self.productMetadata.append("placeholder")
-            print("No metadata extracted.")
-        }
-        print(self.productMetadata.count)
-        
         if selectedImages.count < self.maxPhotoCount {
             selectedImages.append(image)
             self.updateScrollView()
+        } else {
+            displayWarning("Image number exceeded.")
         }
 
         self.dismiss(animated: true, completion: nil)
     }
     
-    
     @IBAction func goToNextPage(_ sender: Any) {
+        
         if selectedImages.count == 0 {
-            displayWarning("Images are needed.")
+            displayWarning("Image is needed.")
             return
         }
+        if selectedImages.count > 5 {
+            displayWarning("Image number exceeded.")
+            return
+        }
+        self.activityIndicator.startAnimating()
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let nextVC = storyboard.instantiateViewController(withIdentifier: "Test") as? TestViewController {
-            // Pass the data to the test view controller
-            nextVC.flagVal = self.flagValue
-            nextVC.barcodeValue = self.barcodeValue
-            nextVC.barcodeImage = self.barcodeImage!
-            nextVC.productImages = self.selectedImages
-            
-            nextVC.barcodeMetadata = self.barcodeMetadata
-            nextVC.productMetadata = self.productMetadata
-
-            self.navigationController?.pushViewController(nextVC, animated: true)
+        self.sendMultipartRequest() { [weak self] success in
+            if success {
+                DispatchQueue.main.async {
+                    self?.activityIndicator.stopAnimating()
+                }
+                self?.displaySuccess2("Upload Succeeded.") {
+                    let sharedData = DataStore.shared
+                    sharedData.selectedProductImages = []
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let nextVC = storyboard.instantiateViewController(withIdentifier: "First")
+                    self?.navigationController?.pushViewController(nextVC, animated: true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.activityIndicator.stopAnimating()
+                }
+                // Handle upload failure
+                self?.displayWarning("Upload to server failed.")
+                return
+            }
         }
     }
     
+    private func textFormField(name: String, value: String, boundary: String) -> String {
+            var fieldString = "--\(boundary)\r\n"
+            fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
+            fieldString += "Content-Type: text/plain; charset=ISO-8859-1\r\n"
+            fieldString += "Content-Transfer-Encoding: 8bit\r\n"
+            fieldString += "\r\n"
+            fieldString += "\(value)\r\n"
+
+            return fieldString
+        }
+    
+    func sendMultipartRequest(completion: @escaping (Bool) -> Void) {
+        let url = URL(string: "http://128.2.25.96:8003/enroll_captures/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        let boundary = "Boundary-\(UUID().uuidString)"
+        let contentType = "multipart/form-data; boundary=\(boundary)"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+
+        let body = NSMutableData()
+
+        // Add barcode_image
+        if let barcodeImageData = barcodeImage!.jpegData(compressionQuality: 1.0) {
+            body.appendString("--\(boundary)\r\n")
+            body.appendString("Content-Disposition: form-data; name=\"barcode_image\"; filename=\"\(barcodeValue).jpg\"\r\n")
+            body.appendString("Content-Type: image/jpeg\r\n\r\n")
+            body.append(barcodeImageData)
+            body.appendString("\r\n")
+        }
+
+        // Add processed_barcode
+//        body.appendString("--\(boundary)\r\n")
+//        body.appendString("Content-Disposition: form-data; name=\"barcode\"\r\n\r\n")
+//        body.appendString("\(barcodeValue)\r\n")
+
+        // Add capture_images
+        for (index, image) in selectedImages.enumerated() {
+            if let imageData = image.jpegData(compressionQuality: 1.0) {
+                body.appendString("--\(boundary)\r\n")
+                body.appendString("Content-Disposition: form-data; name=\"product_images\"; filename=\"product_image_\(index).jpg\"\r\n")
+                body.appendString("Content-Type: image/jpeg\r\n\r\n")
+                body.append(imageData)
+                body.appendString("\r\n")
+            }
+        }
+
+        body.appendString("--\(boundary)--\r\n")
+        print("request body is :\n",body)
+        request.httpBody = body as Data
+        let accesstoken_ = UserDefaults.standard.string(forKey: "access")!
+        request.setValue("Bearer \(String(describing: accesstoken_))", forHTTPHeaderField: "Authorization")
+
+        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 {
+                print("Upload everything to server succeeded with status code 201")
+                completion(true)
+            } else {
+                // Handle error response
+                let httpResponse = response as? HTTPURLResponse
+                print("Upload to server failed with status code: \(httpResponse?.statusCode ?? -1)")
+
+                if let data = data {
+                    if let responseString = String(data: data, encoding: .utf8) {
+                        print("Response data: \(responseString)")
+                    }
+                }
+                self?.displayWarning("Upload to server failed.")
+                completion(false)
+            }
+        }
+
+        task.resume()
+    }
     
     @IBAction func goBack(_ sender: Any) {
         let sharedData = DataStore.shared
-        sharedData.selectedProductImages = self.selectedImages // Set the selectedImages value
-        sharedData.flagValue = self.flagValue
-        sharedData.productMetadata = self.productMetadata
-
+        sharedData.selectedProductImages = self.selectedImages
         self.navigationController?.popViewController(animated: true)
     }
     
-    
-    func uploadImageToAzureStorage(imageData: Data, imageName: String, auth: String, option: String, completion: @escaping (Bool) -> Void) {
-        
-        let storageAccount = "ultronai4walmart"
-        let container = option
-        
-        let urlstring = "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)"
-        print(urlstring)
-        if container == "barcode-captures" {
-            barcodeImageData = urlstring
-        } else {  
-            productImageDatas.append(urlstring)
-        }
-        
-        guard let url = URL(string: "https://\(storageAccount).blob.core.windows.net/\(container)/\(imageName)") else {
-            print("Invalid URL")
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        
-        request.setValue("BlockBlob", forHTTPHeaderField: "x-ms-blob-type")
-        request.setValue("Bearer \(auth)", forHTTPHeaderField: "Authorization")
-        request.setValue("2020-08-04", forHTTPHeaderField: "x-ms-version")
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = ""
-        let dateString = getCurrentDateTime()
-        request.setValue(dateString, forHTTPHeaderField: "x-ms-date")
-        let session = URLSession.shared
-        
-        let task = session.uploadTask(with: request, from: imageData) { (data,response, error) in
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 {
-                print("\(container): Image uploaded succeed with status code 201: " + imageName)
-                self.productImageDatas.append(urlstring)
-                print("Product container has " + String(self.productImageDatas.count) + " images uploaded.")
-            } else {
-                    self.allSuccessful = false
-                    let httpResponse = response as? HTTPURLResponse
-                    if let data = data,
-                       let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let message = responseJSON["detail"] as? String {
-                        print(message)
-                        self.displayWarning(imageName + " " + String(httpResponse?.statusCode ?? 0) + " Error. " + message)
-                    } else {
-                        self.displayWarning(imageName + " " + String(httpResponse?.statusCode ?? 0) + " Error.")
-                    }
-                }
-            }
-        
-        task.resume()
-    }
-    
-    func uploadProductToServer() {
-        if hasUpload != false {
-            self.displayWarning("You already successfully uploaded the image(s).")
-            return
-        }
-        if selectedImages.count == 0 {
-            self.displayWarning("Please upload product image(s).")
-            return
-        }
-        getAuthToken { authToken in
-            if authToken != nil {
-                // Authentication token successfully obtained
-                self.AuthToken = authToken ?? "no authToken"
-                print("Auth token: \(self.AuthToken)")
-                // Use the token for your desired operations
-            } else {
-                // Error occurred while obtaining the authentication token
-                self.displayWarning("Failed to obtain auth token")
-                // Handle the error condition
-            }
-        }
-        
-        print("start uploading barcode images to server")
-        
-        let option = "barcode"
-        let image_Name_barcode = getName(option: option)
-        
-        guard let barcodeImageData = barcodeImage?.jpegData(compressionQuality: 0.8) else {
-            self.displayWarning("Failed to convert barcode image to data")
-            return
-        }
-
-        self.uploadImageToAzureStorage(imageData: barcodeImageData, imageName: image_Name_barcode, auth: self.AuthToken, option: "barcode-captures")  { success in
-            if success {
-                print("Barcode Image upload task succeeded")
-            } else {
-                self.displayWarning("Barcode Image upload task failed")
-                return
-            }
-        }
-        
-        print("start uploading product images to server")
-        
-        self.productImageDatas = []
-        self.allSuccessful = true
-        for image in selectedImages {
-            guard let image_Data = image.jpegData(compressionQuality: 0.8) else {
-                displayWarning("Failed to convert product image to data")
-                return
-            }
-            let image_Name = getName(option: "product")
-            
-            uploadImageToAzureStorage(imageData: image_Data, imageName: image_Name, auth: self.AuthToken, option: "product-captures")  { success in
-                if success {
-                    print("Image upload task succeeded")
-                } else {
-                    self.allSuccessful = false
-                    print("Image upload task failed")
-                }
-            }
-            if self.allSuccessful == false {
-                self.displayWarning("Failed to upload all product images to storage.")
-            }
-        }
-        
-    }
-    
-    
-    func getCurrentDateTime() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
-        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
-        let currentDateTime = Date()
-        let formattedDateTime = dateFormatter.string(from: currentDateTime)
-        return formattedDateTime
-    }
-    
-    
-    func getAuthToken(completion: @escaping (String?) -> Void) {
-        let urlString = "https://login.microsoftonline.com/6dfefb37-6886-4e5e-b19e-643474ed010b/oauth2/token"
-        let clientId = "1b1d367b-a8fc-41f5-922c-6e62da393234"
-        let clientSecret = "ceW8Q~wpSqNJ1Gcdv4xwBYZp1ayAABdyq_tIybe6"
-        let resource = "https://storage.azure.com/"
-
-        let parameters = [
-            "grant_type": "client_credentials",
-            "client_id": clientId,
-            "client_secret": clientSecret,
-            "resource": resource
-        ]
-
-        guard let url = URL(string: urlString) else {
-            completion(nil)
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpBody = parameters
-            .map { "\($0.key)=\($0.value)" }
-            .joined(separator: "&")
-            .data(using: .utf8)
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data,
-                  let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                  let authToken = json["access_token"] as? String else {
-                completion(nil)
-                return
-            }
-            completion(authToken)
-        }
-
-        task.resume()
-        
-        sleep(1)
-    }
-    
-    
     @IBAction func clearAllButtonTapped(_ sender: Any) {
         let sharedData = DataStore.shared
-        sharedData.selectedTestImages = [] // Set the selectedImages value
         sharedData.selectedProductImages = [] // Set the selectedImages value
-        sharedData.flagValue = 0
-        sharedData.testMetadata = []
-        sharedData.productMetadata = []
-        
+
         let alertController = UIAlertController(title: "Clear All", message: "Are you sure you want to start a new session? This will remove all the added items.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -481,6 +354,15 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
         }
     }
     
+    func displaySuccess2(_ message: String, completion: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                completion() // Call the completion handler when "OK" is tapped
+            })
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
     
     func displaySuccess(_ message: String) {
         DispatchQueue.main.async {
@@ -493,3 +375,9 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
     
 }
 
+extension NSMutableData {
+    func appendString(_ string: String) {
+        let data = string.data(using: .utf8, allowLossyConversion: true)
+        append(data!)
+    }
+}
