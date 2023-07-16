@@ -266,9 +266,9 @@ class SecondViewController: UIViewController, AVCapturePhotoCaptureDelegate, UII
         }
 
         // Add processed_barcode
-//        body.appendString("--\(boundary)\r\n")
-//        body.appendString("Content-Disposition: form-data; name=\"barcode\"\r\n\r\n")
-//        body.appendString("\(barcodeValue)\r\n")
+        body.appendString("--\(boundary)\r\n")
+        body.appendString("Content-Disposition: form-data; name=\"barcode\"\r\n\r\n")
+        body.appendString("\(barcodeValue)\r\n")
 
         // Add capture_images
         for (index, image) in selectedImages.enumerated() {
